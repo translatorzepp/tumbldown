@@ -1,0 +1,4 @@
+logging:
+  level: INFO
+  loggers:
+    zpalmer.tumbldown: DEBUG
