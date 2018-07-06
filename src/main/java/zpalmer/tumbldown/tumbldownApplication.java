@@ -1,9 +1,13 @@
 package zpalmer.tumbldown;
 
 import io.dropwizard.Application;
+import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
+import javax.ws.rs.client.Client;
+
+import zpalmer.tumbldown.resources.BlogResource;
 import zpalmer.tumbldown.resources.HelloWorldResource;
 
 public class tumbldownApplication extends Application<tumbldownConfiguration> {
@@ -25,6 +29,13 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
     @Override
     public void run(final tumbldownConfiguration configuration,
                     final Environment environment) {
+        final Client client = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration())
+                .build(getName());
+//        environment.jersey().register(new SomethingOrOther(client));
+
+        final BlogResource blogResource = new BlogResource();
+        environment.jersey().register(blogResource);
+
         // this "registers" a resource as something that can be reached in the environment
         final HelloWorldResource helloResource = new HelloWorldResource(
                 configuration.getHelloWorldTemplate(),
@@ -32,5 +43,4 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
         );
         environment.jersey().register(helloResource);
     }
-
 }
