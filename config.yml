@@ -1,3 +1,6 @@
+helloWorldTemplate: Hello, %s!
+helloWorldDefaultName: Stranger
+
 logging:
   level: INFO
   loggers:

@@ -4,6 +4,8 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
+import zpalmer.tumbldown.resources.HelloWorldResource;
+
 public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
     public static void main(final String[] args) throws Exception {
@@ -23,7 +25,12 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
     @Override
     public void run(final tumbldownConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
+        // this "registers" a resource as something that can be reached in the environment
+        final HelloWorldResource helloResource = new HelloWorldResource(
+                configuration.getHelloWorldTemplate(),
+                configuration.getHelloWorldDefaultName()
+        );
+        environment.jersey().register(helloResource);
     }
 
 }
