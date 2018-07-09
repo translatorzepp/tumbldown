@@ -7,6 +7,7 @@ import io.dropwizard.setup.Environment;
 
 import javax.ws.rs.client.Client;
 
+import zpalmer.tumbldown.client.Tumblr;
 import zpalmer.tumbldown.resources.BlogResource;
 import zpalmer.tumbldown.resources.HelloWorldResource;
 
@@ -31,7 +32,7 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
                     final Environment environment) {
         final Client client = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration())
                 .build(getName());
-//        environment.jersey().register(new SomethingOrOther(client));
+        environment.jersey().register(new Tumblr(client));
 
         final BlogResource blogResource = new BlogResource();
         environment.jersey().register(blogResource);
