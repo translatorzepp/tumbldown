@@ -8,6 +8,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import zpalmer.tumbldown.api.Blog;
 
 @Path("tumblr_blog")
@@ -15,7 +17,7 @@ import zpalmer.tumbldown.api.Blog;
 public class BlogResource {
     @GET
     @Timed
-    public Blog getTumblrBlog(@QueryParam("name") String name) {
+    public Blog getTumblrBlog(@QueryParam("name") @NotEmpty String name) {
         int madeupNmberOfLikes = 45;
         return new Blog(name, madeupNmberOfLikes);
     }
