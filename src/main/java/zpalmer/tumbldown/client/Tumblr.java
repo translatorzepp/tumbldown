@@ -20,7 +20,12 @@ public class Tumblr {
         String fullUrl = baseUrl + "blog/" + fullName + "/info" + authentication;
         client.target(fullUrl);
         // pass fullUrl into client in order to get JSON response
-        return new Blog("tempname", 5); // should we be able to make this happen automatically?
+
+        // should we be able to make this happen automatically?
+        //   like, if we just pass the full JSON response from the tumblr api in,
+        //   should Blog, as a Jackson-annotated thing, be able to just grab the correct fields?
+        //   I think yes
+        return new Blog(name, 5);
     }
 
     //api.tumblr.com/v2/blog/{blog-identifier}/likes?api_key={key}

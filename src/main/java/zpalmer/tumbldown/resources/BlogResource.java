@@ -11,14 +11,19 @@ import javax.ws.rs.core.MediaType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import zpalmer.tumbldown.api.Blog;
+import zpalmer.tumbldown.client.Tumblr;
 
 @Path("tumblr_blog")
 @Produces(MediaType.APPLICATION_JSON)
 public class BlogResource {
+
+    private Tumblr tumblrClient;
+
+    public BlogResource(Tumblr client) { this.tumblrClient = client; }
+
     @GET
     @Timed
     public Blog getTumblrBlog(@QueryParam("name") @NotEmpty String name) {
-        int madeupNmberOfLikes = 45;
-        return new Blog(name, madeupNmberOfLikes);
+        return tumblrClient.getBlog(name);
     }
 }

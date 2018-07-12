@@ -32,9 +32,11 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
                     final Environment environment) {
         final Client client = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration())
                 .build(getName());
-        environment.jersey().register(new Tumblr(client));
 
-        final BlogResource blogResource = new BlogResource();
+        final Tumblr tumblr = new Tumblr(client);
+        environment.jersey().register(tumblr); // do we actually need to register this? what will it do?
+
+        final BlogResource blogResource = new BlogResource(tumblr);
         environment.jersey().register(blogResource);
 
         // this "registers" a resource as something that can be reached in the environment
