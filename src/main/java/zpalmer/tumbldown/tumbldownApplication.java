@@ -34,7 +34,6 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
                 .build(getName());
 
         final Tumblr tumblr = new Tumblr(client);
-        environment.jersey().register(tumblr); // do we actually need to register this? what will it do?
 
         final BlogResource blogResource = new BlogResource(tumblr);
         environment.jersey().register(blogResource);
