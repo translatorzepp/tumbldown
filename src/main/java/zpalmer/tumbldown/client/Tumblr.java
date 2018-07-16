@@ -1,13 +1,16 @@
 package zpalmer.tumbldown.client;
 
+import java.util.Map;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import zpalmer.tumbldown.api.Blog;
+import zpalmer.tumbldown.api.TumblrSuccessResponse;
+
+import static java.lang.Integer.parseInt;
 
 public class Tumblr {
     private String baseUrl = "https://api.tumblr.com/v2";
@@ -32,10 +35,14 @@ public class Tumblr {
         Response response = invocationBuilder.get();
 
         System.out.println(response.getStatus());
-        System.out.println(response.readEntity(String.class));
 
-        //return response.readEntity(Blog.class);
-        return new Blog(name, 5);
-
+        if (response.getStatus() == 200) {
+            TumblrSuccessResponse successResponse = response.readEntity(TumblrSuccessResponse.class);
+            System.out.println(successResponse.getResponse());
+            Map<String, String> blog = successResponse.getResponse().get("blog");
+            return new Blog(blog.get("name"), parseInt(blog.get("likes"), 10));
+        } else {
+            return new Blog("tumblr_not_found", 0);
+        }
     }
 }
