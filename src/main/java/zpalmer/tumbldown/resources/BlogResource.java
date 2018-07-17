@@ -26,4 +26,5 @@ public class BlogResource {
     public Blog getTumblrBlog(@QueryParam("name") @NotEmpty String name) {
         return tumblrClient.getBlog(name);
     }
+    // To Do: add exception handling here for a failure
 }

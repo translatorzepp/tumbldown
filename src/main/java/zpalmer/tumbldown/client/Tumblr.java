@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import zpalmer.tumbldown.api.Blog;
+import zpalmer.tumbldown.api.TumblrFailureResponse;
 import zpalmer.tumbldown.api.TumblrSuccessResponse;
 
 import static java.lang.Integer.parseInt;
@@ -38,11 +39,14 @@ public class Tumblr {
 
         if (response.getStatus() == 200) {
             TumblrSuccessResponse successResponse = response.readEntity(TumblrSuccessResponse.class);
+            System.out.println(successResponse.getMeta().getMessage());
             System.out.println(successResponse.getResponse());
             Map<String, String> blog = successResponse.getResponse().get("blog");
             return new Blog(blog.get("name"), parseInt(blog.get("likes"), 10));
         } else {
-            return new Blog("tumblr_not_found", 0);
+            TumblrFailureResponse failResponse = response.readEntity(TumblrFailureResponse.class);
+            // To Do: throw exception here and add exception handling in the Resources
+            return new Blog(failResponse.getMeta().getMessage(), 0);
         }
     }
 }
