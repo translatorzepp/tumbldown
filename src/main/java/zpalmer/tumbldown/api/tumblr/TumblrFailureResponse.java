@@ -1,13 +1,10 @@
-package zpalmer.tumbldown.api;
+package zpalmer.tumbldown.api.tumblr;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Map;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TumblrFailureResponse {
+public class TumblrFailureResponse implements TumblrResponse {
     private TumblrResponseMeta meta;
 
     public TumblrFailureResponse() {}

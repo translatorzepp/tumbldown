@@ -1,10 +1,10 @@
-package zpalmer.tumbldown.api;
+package zpalmer.tumbldown.api.tumblr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-public class TumblrSuccessResponse {
+public class TumblrSuccessResponse implements TumblrResponse {
     private TumblrResponseMeta meta;
     private Map<String, Map<String, String>> response;
 

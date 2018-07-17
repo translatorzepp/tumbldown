@@ -1,4 +1,4 @@
-package zpalmer.tumbldown.api;
+package zpalmer.tumbldown.api.tumblr;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

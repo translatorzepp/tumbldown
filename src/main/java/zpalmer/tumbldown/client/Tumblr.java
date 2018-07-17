@@ -1,17 +1,14 @@
 package zpalmer.tumbldown.client;
 
-import java.util.Map;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import zpalmer.tumbldown.api.Blog;
-import zpalmer.tumbldown.api.TumblrFailureResponse;
-import zpalmer.tumbldown.api.TumblrSuccessResponse;
-
-import static java.lang.Integer.parseInt;
+import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
+import zpalmer.tumbldown.api.tumblr.TumblrResponse;
+import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 
 public class Tumblr {
     private String baseUrl = "https://api.tumblr.com/v2";
@@ -27,7 +24,7 @@ public class Tumblr {
                 .queryParam("api_key", authentication);
     }
 
-    public Blog getBlog(String name) {
+    public TumblrResponse getBlog(String name) {
         // api.tumblr.com/v2/blog/{blog-identifier}/info?api_key={key}
         String fullName = name + ".tumblr.com";
 
@@ -39,14 +36,14 @@ public class Tumblr {
 
         if (response.getStatus() == 200) {
             TumblrSuccessResponse successResponse = response.readEntity(TumblrSuccessResponse.class);
-            System.out.println(successResponse.getMeta().getMessage());
             System.out.println(successResponse.getResponse());
-            Map<String, String> blog = successResponse.getResponse().get("blog");
-            return new Blog(blog.get("name"), parseInt(blog.get("likes"), 10));
+
+            return successResponse;
         } else {
             TumblrFailureResponse failResponse = response.readEntity(TumblrFailureResponse.class);
-            // To Do: throw exception here and add exception handling in the Resources
-            return new Blog(failResponse.getMeta().getMessage(), 0);
+            System.out.println(failResponse.getMeta().getMessage());
+
+            return failResponse;
         }
     }
 }
