@@ -2,10 +2,6 @@ package zpalmer.tumbldown.resources;
 
 import com.codahale.metrics.annotation.Timed;
 
-import static java.lang.Integer.parseInt;
-
-import java.util.Map;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,6 +16,7 @@ import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
 
+
 @Path("tumblr_blog")
 @Produces(MediaType.APPLICATION_JSON)
 public class BlogResource {
@@ -33,12 +30,11 @@ public class BlogResource {
     public Blog getTumblrBlog(@QueryParam("name") @NotEmpty String name) {
         TumblrResponse response = tumblrClient.getBlog(name);
         if (response instanceof TumblrSuccessResponse) {
-            Map<String, String> blog = ((TumblrSuccessResponse) response).getResponse().get("blog");
-            return new Blog(blog.get("name"),
-                    parseInt(blog.get("likes"), 10));
+            TumblrSuccessResponse success = (TumblrSuccessResponse) response;
+            return success.getBlog();
         } else {
-            // To Do: add exception handling here for a failure
             String errorMessage = ((TumblrFailureResponse) response).getMeta().getMessage();
+            // To Do: return an error instead
             return new Blog(errorMessage, 0);
         }
     }

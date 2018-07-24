@@ -36,7 +36,6 @@ public class Tumblr {
 
         if (response.getStatus() == 200) {
             TumblrSuccessResponse successResponse = response.readEntity(TumblrSuccessResponse.class);
-            System.out.println(successResponse.getResponse());
 
             return successResponse;
         } else {
