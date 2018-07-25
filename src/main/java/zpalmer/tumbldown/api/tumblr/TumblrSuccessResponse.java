@@ -7,14 +7,10 @@ import zpalmer.tumbldown.api.Blog;
 import java.util.Map;
 
 
-public class TumblrSuccessResponse implements TumblrResponse {
-    private TumblrResponseMeta meta;
+public class TumblrSuccessResponse extends TumblrResponse {
     private Blog blog;
 
-    public TumblrSuccessResponse() {}
-
-    @JsonProperty
-    public TumblrResponseMeta getMeta() { return meta; }
+    public TumblrSuccessResponse() { }
 
     @JsonProperty
     public Blog getBlog() { return blog; }

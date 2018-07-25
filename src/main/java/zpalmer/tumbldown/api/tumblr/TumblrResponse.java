@@ -1,4 +1,13 @@
 package zpalmer.tumbldown.api.tumblr;
 
-public interface TumblrResponse {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public abstract class TumblrResponse {
+    private TumblrResponseMeta meta;
+
+    @JsonProperty
+    public TumblrResponseMeta getMeta() {
+        return meta;
+    };
+
 }
