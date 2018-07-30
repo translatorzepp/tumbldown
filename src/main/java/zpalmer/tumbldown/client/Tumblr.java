@@ -26,14 +26,18 @@ public class Tumblr {
 
     public TumblrResponse getBlog(String name) {
         // api.tumblr.com/v2/blog/{blog-identifier}/info?api_key={key}
-        String fullName = name + ".tumblr.com";
-
-        WebTarget blogTarget = baseTarget.path("blog/" + fullName + "/info");
-        Invocation.Builder invocationBuilder = blogTarget.request(MediaType.APPLICATION_JSON);
+        Invocation.Builder invocationBuilder = blogRequestInvocationBuilder(name, "info");
         Response response = invocationBuilder.get();
 
-        System.out.println(response.getStatus());
+        return respondToSuccessOrFailure(response);
+    }
 
+    private Invocation.Builder blogRequestInvocationBuilder(String blogName, String blogSubPath) {
+        WebTarget target = baseTarget.path("blog/" + blogName + ".tumblr.com/" + blogSubPath);
+        return target.request(MediaType.APPLICATION_JSON);
+    }
+
+    private TumblrResponse respondToSuccessOrFailure(Response response) {
         if (response.getStatus() == 200) {
             TumblrSuccessResponse successResponse = response.readEntity(TumblrSuccessResponse.class);
 
