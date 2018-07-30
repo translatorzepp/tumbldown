@@ -32,6 +32,14 @@ public class Tumblr {
         return respondToSuccessOrFailure(response);
     }
 
+    public TumblrResponse getLikes(String blogName) {
+        //api.tumblr.com/v2/blog/{blog-identifier}/likes?api_key={key}
+        Invocation.Builder invocationBuilder = blogRequestInvocationBuilder(blogName, "likes");
+        Response response = invocationBuilder.get();
+
+        return respondToSuccessOrFailure(response);
+    }
+
     private Invocation.Builder blogRequestInvocationBuilder(String blogName, String blogSubPath) {
         WebTarget target = baseTarget.path("blog/" + blogName + ".tumblr.com/" + blogSubPath);
         return target.request(MediaType.APPLICATION_JSON);

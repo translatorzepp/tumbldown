@@ -10,6 +10,7 @@ import javax.ws.rs.client.Client;
 import zpalmer.tumbldown.client.Tumblr;
 import zpalmer.tumbldown.resources.BlogResource;
 import zpalmer.tumbldown.resources.HelloWorldResource;
+import zpalmer.tumbldown.resources.PostsResource;
 
 public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
@@ -37,6 +38,9 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
         final BlogResource blogResource = new BlogResource(tumblr);
         environment.jersey().register(blogResource);
+
+        final PostsResource postsResource = new PostsResource(tumblr);
+        environment.jersey().register(postsResource);
 
         // this "registers" a resource as something that can be reached in the environment
         final HelloWorldResource helloResource = new HelloWorldResource(

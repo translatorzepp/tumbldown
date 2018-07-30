@@ -12,7 +12,7 @@ public class TumblrSuccessResponseTest {
     private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
 
     @Test
-    public void tumblrSuccessResponseFromJson() throws Exception {
+    public void tumblrSuccessResponseBlogFromJson() throws Exception {
         TumblrSuccessResponse response = MAPPER.readValue(
                 fixture("fixtures/tumblrsuccessresponse-bloginfo.json"),
                 TumblrSuccessResponse.class);
@@ -20,4 +20,12 @@ public class TumblrSuccessResponseTest {
         assertThat(response.getMeta().getMessage().equals("OK"));
     }
 
+    @Test
+    public void tumblrSuccessResponsePostsFromJson() throws Exception {
+        TumblrSuccessResponse response = MAPPER.readValue(
+                fixture("fixtures/tumblrsuccessresponse-posts.json"),
+                TumblrSuccessResponse.class);
+
+        assertThat(response.getMeta().getMessage().equals("OK"));
+    }
 }

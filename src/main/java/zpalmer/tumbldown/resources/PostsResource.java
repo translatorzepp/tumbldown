@@ -2,40 +2,38 @@ package zpalmer.tumbldown.resources;
 
 import com.codahale.metrics.annotation.Timed;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import java.util.Arrays;
+import java.util.Collection;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import zpalmer.tumbldown.api.Blog;
+import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
 
 
-@Path("tumblr_blog")
+@Path("likes")
 @Produces(MediaType.APPLICATION_JSON)
-public class BlogResource {
-
+public class PostsResource {
     private Tumblr tumblrClient;
 
-    public BlogResource(Tumblr client) { this.tumblrClient = client; }
+    public PostsResource(Tumblr client) { this.tumblrClient = client; }
 
     @GET
     @Timed
-    public Blog getTumblrBlog(@QueryParam("blogName") @NotEmpty String name) {
-        TumblrResponse response = tumblrClient.getBlog(name);
+    public Collection<Post> getLikes(@QueryParam("blogName") @NotEmpty String name) {
+        TumblrResponse response = tumblrClient.getLikes(name);
         if (response instanceof TumblrSuccessResponse) {
             TumblrSuccessResponse success = (TumblrSuccessResponse) response;
-            return success.getBlog();
+            return success.getPosts();
         } else {
             String errorMessage = ((TumblrFailureResponse) response).getMeta().getMessage();
             // To Do: return an error instead
-            return new Blog(errorMessage, 0);
+            return Arrays.asList(new Post());
         }
     }
 }
