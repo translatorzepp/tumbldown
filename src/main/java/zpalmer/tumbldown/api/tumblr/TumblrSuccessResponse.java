@@ -27,6 +27,6 @@ public class TumblrSuccessResponse extends TumblrResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     private void unpackFromResponse(Map<String, Object> response) {
         blog = mapper.convertValue(response.get("blog"), Blog.class);
-        posts = (Collection<Post>)response.get("liked_posts");
+        posts = mapper.convertValue(response.get("liked_posts"), new TypeReference<Collection<Post>>() {});
     }
 }
