@@ -18,11 +18,11 @@ public class Post {
 
     public Post() { }
 
-    @JsonProperty("source_title")
-    public String getCreatorBlogName() { return creatorBlogName; }
-
     @JsonProperty("blog_name")
     public String getLikedFromBlogName() { return likedFromBlogName; }
+
+    @JsonProperty("source_title")
+    public String getCreatorBlogName() { return creatorBlogName; }
 
     @JsonProperty
     public String getSummary() { return summary; }
@@ -31,4 +31,14 @@ public class Post {
 
     @JsonProperty("post_url")
     public URL getUrl() { return url; }
+
+
+    public boolean containsText( String searchText) {
+
+        if (getSummary().contains(searchText)) {
+            return true;
+        }
+
+        return false;
+    }
 }
