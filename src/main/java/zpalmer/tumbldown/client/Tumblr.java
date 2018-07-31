@@ -11,8 +11,9 @@ import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 
 public class Tumblr {
-    private String baseUrl = "https://api.tumblr.com/v2";
-    private String authentication = "fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4";
+    private static final String BASE_API_URL = "https://api.tumblr.com/v2";
+    private static final String AUTHENTICATION = "fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4";
+    private static final int LIMIT = 50;
 
     private WebTarget baseTarget;
 
@@ -20,8 +21,8 @@ public class Tumblr {
 
     public Tumblr(Client client) {
         this.client = client;
-        this.baseTarget = client.target(baseUrl)
-                .queryParam("api_key", authentication);
+        this.baseTarget = client.target(BASE_API_URL)
+                .queryParam("api_key", AUTHENTICATION);
     }
 
     public TumblrResponse getBlog(String name) {
@@ -34,7 +35,9 @@ public class Tumblr {
 
     public TumblrResponse getLikes(String blogName) {
         //api.tumblr.com/v2/blog/{blog-identifier}/likes?api_key={key}
-        Invocation.Builder invocationBuilder = blogRequestInvocationBuilder(blogName, "likes");
+        WebTarget likesTarget = baseTarget.path("blog/" + blogName + ".tumblr.com/" + "likes");
+        likesTarget = likesTarget.queryParam("limit", LIMIT);
+        Invocation.Builder invocationBuilder = likesTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
 
         return respondToSuccessOrFailure(response);
