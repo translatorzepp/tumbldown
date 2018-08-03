@@ -18,6 +18,10 @@ public class Post {
 
     public Post() { }
 
+    public Post(String summary) {
+        this.summary = summary;
+    }
+
     @JsonProperty("blog_name")
     public String getLikedFromBlogName() { return likedFromBlogName; }
 
