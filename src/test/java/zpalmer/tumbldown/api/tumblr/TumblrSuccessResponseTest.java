@@ -17,7 +17,7 @@ public class TumblrSuccessResponseTest {
                 fixture("fixtures/tumblrsuccessresponse-bloginfo.json"),
                 TumblrSuccessResponse.class);
 
-        assertThat(response.getMeta().getMessage().equals("OK"));
+        assertThat(response.getMeta().getMessage()).isEqualTo("OK");
     }
 
     @Test
@@ -26,6 +26,7 @@ public class TumblrSuccessResponseTest {
                 fixture("fixtures/tumblrsuccessresponse-posts.json"),
                 TumblrSuccessResponse.class);
 
-        assertThat(response.getMeta().getMessage().equals("OK"));
+        assertThat(response.getMeta().getMessage()).isEqualTo("OK");
+        assertThat(response.getPosts()).hasSize(1);
     }
 }

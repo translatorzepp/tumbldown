@@ -19,7 +19,7 @@ public class BlogTest {
                 Blog.class
         );
 
-        assertThat(blog.getName().equals("ritterssport"));
-        assertThat(blog.getNumberOfLikes() == (9312));
+        assertThat(blog.getName()).isEqualTo("ritterssport");
+        assertThat(blog.getNumberOfLikes()).isEqualTo(9312);
     }
 }
