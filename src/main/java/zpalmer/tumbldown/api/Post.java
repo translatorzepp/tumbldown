@@ -38,8 +38,7 @@ public class Post {
 
 
     public boolean containsText( String searchText) {
-
-        if (getSummary().contains(searchText)) {
+        if (getSummary().toLowerCase().contains(searchText.toLowerCase())) {
             return true;
         }
 
