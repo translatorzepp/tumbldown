@@ -2,9 +2,7 @@ package zpalmer.tumbldown.resources;
 
 import com.codahale.metrics.annotation.Timed;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
@@ -31,24 +29,19 @@ public class PostsResource {
         if (response instanceof TumblrSuccessResponse) {
             TumblrSuccessResponse success = (TumblrSuccessResponse) response;
             Collection<Post> posts = success.getPosts();
-            return filterPostsBySearchString(posts, searchText);
+
+            return filterPostsBySearchString(posts, Optional.ofNullable(searchText));
         } else {
             String errorMessage = ((TumblrFailureResponse) response).getMeta().getMessage();
             // To Do: return an error instead
-            return Arrays.asList(new Post());
+            return Arrays.asList(new Post(errorMessage));
         }
     }
 
-    protected Collection<Post> filterPostsBySearchString(Collection<Post> posts, String searchText) {
-        Iterator postIterator = posts.iterator();
-
-        postIterator.forEachRemaining(post -> {
-            if (!(((Post) post).containsText(searchText))) {
-                // THIS IS THE WORST
-                postIterator.remove();
-            }
-        });
-
+    protected Collection<Post> filterPostsBySearchString(Collection<Post> posts, Optional<String> searchText) {
+        if (searchText.isPresent()) {
+            posts.removeIf(post -> !post.containsText(searchText.get()));
+        }
         return posts;
     }
 }
