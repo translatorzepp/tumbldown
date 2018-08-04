@@ -13,30 +13,34 @@ public class PostsResourceTest {
     private static PostsResource POSTS_RESOURCE = new PostsResource(mock(Tumblr.class));
 
     private static Optional<String> searchString = Optional.of("gay");
-    private static Post postWithSearchString = new Post("I feel pretty and witty and gay");
-    private static Post postWithoutSearchString = new Post("I feel pretty and witty and bright");
+    private static Post postWithSearchStringFirst = new Post("I feel pretty and witty and gay");
+    private static Post postWithoutSearchStringFirst = new Post("I feel pretty and witty and bright");
+    private static Post postWithoutSearchStringSecond = new Post("and I pity any girl who isn't me to{day|night}");
+
 
     @Test
     public void selectPostsWithSearchTermInSummary() {
         LinkedList<Post> originalPostCollection = new LinkedList<>();
-        originalPostCollection.add(postWithoutSearchString);
-        originalPostCollection.add(postWithSearchString);
+        originalPostCollection.add(postWithoutSearchStringFirst);
+        originalPostCollection.add(postWithSearchStringFirst);
+        originalPostCollection.add(postWithoutSearchStringSecond);
 
         Collection<Post> searchResultsPostCollection = POSTS_RESOURCE
                 .filterPostsBySearchString(originalPostCollection, searchString);
 
-        assertThat(originalPostCollection).contains(postWithSearchString);
-        assertThat(originalPostCollection).contains(postWithoutSearchString);
+        assertThat(originalPostCollection).contains(postWithSearchStringFirst);
+        assertThat(originalPostCollection).contains(postWithoutSearchStringFirst);
 
-        assertThat(searchResultsPostCollection).contains(postWithSearchString);
-        assertThat(searchResultsPostCollection).doesNotContain(postWithoutSearchString);
+        assertThat(searchResultsPostCollection).contains(postWithSearchStringFirst);
+        assertThat(searchResultsPostCollection).doesNotContain(postWithoutSearchStringFirst);
+        assertThat(searchResultsPostCollection).doesNotContain(postWithoutSearchStringSecond);
     }
 
     @Test
     public void removeIfRemoves() {
         LinkedList<Post> originalPostCollection = new LinkedList<>();
-        originalPostCollection.add(postWithoutSearchString);
-        originalPostCollection.add(postWithSearchString);
+        originalPostCollection.add(postWithoutSearchStringFirst);
+        originalPostCollection.add(postWithSearchStringFirst);
 
         boolean resultOfFilter = originalPostCollection.removeIf(post -> post.containsText(searchString.get()));
 

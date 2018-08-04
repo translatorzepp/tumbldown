@@ -14,6 +14,7 @@ public class Tumblr {
     private static final String BASE_API_URL = "https://api.tumblr.com/v2";
     private static final String AUTHENTICATION = "fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4";
     private static final int LIMIT = 50;
+    private static final int TUMBLR_LIMIT = LIMIT - 1; // because they zeroth this :|
 
     private WebTarget baseTarget;
 
@@ -27,25 +28,25 @@ public class Tumblr {
 
     public TumblrResponse getBlog(String name) {
         // api.tumblr.com/v2/blog/{blog-identifier}/info?api_key={key}
-        Invocation.Builder invocationBuilder = blogRequestInvocationBuilder(name, "info");
+        WebTarget target = baseTarget.path("blog/" + name + ".tumblr.com/" + "info");
+        Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
+
         Response response = invocationBuilder.get();
 
         return respondToSuccessOrFailure(response);
     }
 
-    public TumblrResponse getLikes(String blogName) {
+    public TumblrResponse getLikes(String blogName, long beforeTime) {
         //api.tumblr.com/v2/blog/{blog-identifier}/likes?api_key={key}
-        WebTarget likesTarget = baseTarget.path("blog/" + blogName + ".tumblr.com/" + "likes");
-        likesTarget = likesTarget.queryParam("limit", LIMIT);
+
+        WebTarget likesTarget = baseTarget.path("blog/" + blogName + ".tumblr.com/" + "likes")
+                .queryParam("limit", TUMBLR_LIMIT)
+                .queryParam("before", beforeTime);
+
         Invocation.Builder invocationBuilder = likesTarget.request(MediaType.APPLICATION_JSON);
         Response response = invocationBuilder.get();
 
         return respondToSuccessOrFailure(response);
-    }
-
-    private Invocation.Builder blogRequestInvocationBuilder(String blogName, String blogSubPath) {
-        WebTarget target = baseTarget.path("blog/" + blogName + ".tumblr.com/" + blogSubPath);
-        return target.request(MediaType.APPLICATION_JSON);
     }
 
     private TumblrResponse respondToSuccessOrFailure(Response response) {

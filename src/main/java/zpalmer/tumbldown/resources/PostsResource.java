@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import zpalmer.tumbldown.api.Post;
-import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
@@ -24,15 +23,19 @@ public class PostsResource {
 
     @GET
     @Timed
-    public Collection<Post> getLikes(@QueryParam("blogName") @NotEmpty String name, @QueryParam("searchText") String searchText) {
-        TumblrResponse response = tumblrClient.getLikes(name);
+    public Collection<Post> getLikes(@QueryParam("blogName") @NotEmpty String name,
+                                     @QueryParam("searchText") String searchText
+    ) {
+        long epochTimeNow = new Date().getTime();
+
+        TumblrResponse response = tumblrClient.getLikes(name, epochTimeNow);
         if (response instanceof TumblrSuccessResponse) {
             TumblrSuccessResponse success = (TumblrSuccessResponse) response;
             Collection<Post> posts = success.getPosts();
 
             return filterPostsBySearchString(posts, Optional.ofNullable(searchText));
         } else {
-            String errorMessage = ((TumblrFailureResponse) response).getMeta().getMessage();
+            String errorMessage = response.getMeta().getMessage();
             // To Do: return an error instead
             return Arrays.asList(new Post(errorMessage));
         }

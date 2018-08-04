@@ -17,7 +17,7 @@ import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
 
 
-@Path("tumblr_blog")
+@Path("blog")
 @Produces(MediaType.APPLICATION_JSON)
 public class BlogResource {
 
