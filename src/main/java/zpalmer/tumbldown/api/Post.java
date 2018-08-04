@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
+    // TO DO: turn this into an abstract class and subclass the various post types
+            // including an unknown type with only the common fields!
+
     private String creatorBlogName;
     private String likedFromBlogName;
     private String summary;
@@ -38,9 +41,13 @@ public class Post {
 
 
     public boolean containsText( String searchText) {
-        if (getSummary().toLowerCase().contains(searchText.toLowerCase())) {
+        final String casedSearchText = searchText.toLowerCase();
+
+        if (getSummary().toLowerCase().contains(casedSearchText)) {
             return true;
         }
+
+        // TO DO: add searching of tags and other text-based fields
 
         return false;
     }
