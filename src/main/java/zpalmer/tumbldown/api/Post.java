@@ -18,6 +18,7 @@ public class Post {
     private ArrayList<String> tags;
     private String type;
     private URL url;
+    private Long likedAt;
 
     public Post() { }
 
@@ -38,6 +39,9 @@ public class Post {
 
     @JsonProperty("post_url")
     public URL getUrl() { return url; }
+
+    @JsonProperty("liked_timestamp")
+    public Long getLikedAt() { return likedAt; }
 
 
     public boolean containsText( String searchText) {

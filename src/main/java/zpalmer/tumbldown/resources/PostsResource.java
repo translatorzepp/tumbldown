@@ -23,25 +23,40 @@ public class PostsResource {
 
     @GET
     @Timed
-    public Collection<Post> getLikes(@QueryParam("blogName") @NotEmpty String name,
+    public LinkedList<Post> getLikes(@QueryParam("blogName") @NotEmpty String name,
                                      @QueryParam("searchText") String searchText
     ) {
-        long epochTimeNow = new Date().getTime();
+        Long likedBeforeTimestamp = new Date().getTime();
+        LinkedList<Post> posts = new LinkedList<>();
+        boolean morePosts = true;
 
-        TumblrResponse response = tumblrClient.getLikes(name, epochTimeNow);
-        if (response instanceof TumblrSuccessResponse) {
-            TumblrSuccessResponse success = (TumblrSuccessResponse) response;
-            Collection<Post> posts = success.getPosts();
+        while (morePosts) {
 
-            return filterPostsBySearchString(posts, Optional.ofNullable(searchText));
-        } else {
-            String errorMessage = response.getMeta().getMessage();
-            // To Do: return an error instead
-            return Arrays.asList(new Post(errorMessage));
+            TumblrResponse response = tumblrClient.getLikes(name, likedBeforeTimestamp);
+            if (response instanceof TumblrSuccessResponse) {
+                TumblrSuccessResponse success = (TumblrSuccessResponse) response;
+                posts.addAll(success.getPosts());
+
+                Long lastLikedBeforeTimestamp = posts.getLast().getLikedAt();
+
+                if (likedBeforeTimestamp.equals(lastLikedBeforeTimestamp)) {
+                    morePosts = false;
+                } else {
+                    likedBeforeTimestamp = lastLikedBeforeTimestamp;
+                }
+            } else {
+                String errorMessage = response.getMeta().getMessage();
+                // To Do: return an error instead
+                posts.add(new Post(errorMessage));
+                morePosts = false;
+            }
         }
+
+        return filterPostsBySearchString(posts, Optional.ofNullable(searchText));
+
     }
 
-    protected Collection<Post> filterPostsBySearchString(Collection<Post> posts, Optional<String> searchText) {
+    protected LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, Optional<String> searchText) {
         if (searchText.isPresent()) {
             posts.removeIf(post -> !post.containsText(searchText.get()));
         }
