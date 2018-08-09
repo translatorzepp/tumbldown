@@ -25,7 +25,6 @@ public class tumbldownConfiguration extends Configuration {
     }
 
 
-
     @NotEmpty
     private String helloWorldTemplate;
 

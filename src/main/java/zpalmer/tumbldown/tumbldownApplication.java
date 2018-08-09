@@ -46,7 +46,6 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
         final PostsResource postsResource = new PostsResource(tumblr);
         environment.jersey().register(postsResource);
 
-        // this "registers" a resource as something that can be reached in the environment
         final HelloWorldResource helloResource = new HelloWorldResource(
                 configuration.getHelloWorldTemplate(),
                 configuration.getHelloWorldDefaultName()

@@ -9,8 +9,7 @@ import java.util.ArrayList;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
-    // TO DO: turn this into an abstract class and subclass the various post types
-            // including an unknown type with only the common fields!
+    // TODO: turn this into an abstract class and subclass the various post types, including an unknown type with only the common fields!
 
     private String creatorBlogName;
     private String likedFromBlogName;

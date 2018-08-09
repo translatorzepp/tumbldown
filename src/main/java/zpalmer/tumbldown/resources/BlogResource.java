@@ -34,7 +34,7 @@ public class BlogResource {
             return success.getBlog();
         } else {
             String errorMessage = ((TumblrFailureResponse) response).getMeta().getMessage();
-            // To Do: return an error instead
+            // TODO: throw an exception instead
             return new Blog(errorMessage, 0);
         }
     }

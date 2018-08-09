@@ -12,7 +12,7 @@ import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 
 public class Tumblr {
     private static final String BASE_API_URL = "https://api.tumblr.com/v2";
-    private static final String AUTHENTICATION = "fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4";
+    private static final String AUTHENTICATION = System.getenv("TUMBLR_API_KEY");
     private static final int LIMIT = 50;
     private static final int TUMBLR_LIMIT = LIMIT - 1; // because they zeroth this :|
 
@@ -23,7 +23,7 @@ public class Tumblr {
         this.client = client;
     }
 
-    // need to handle exceptions thrown by the client
+    // TODO: handle exceptions thrown by the client
 
     public TumblrResponse getBlog(String name) {
         // api.tumblr.com/v2/blog/{blog-identifier}/info?api_key={key}
