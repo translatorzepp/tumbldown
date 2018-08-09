@@ -23,28 +23,33 @@ public class PostsResource {
 
     @GET
     @Timed
-    public LinkedList<Post> getLikes(@QueryParam("blogName") @NotEmpty String name,
-                                     @QueryParam("searchText") String searchText
+    public LinkedList<Post> getLikes(@QueryParam("blogName") @NotEmpty String blogName,
+                                     @QueryParam("searchText") String searchText,
+                                     @QueryParam("before") Long likedBeforeTimestampSeconds
     ) {
-        Long likedBeforeTimestamp = new Date().getTime();
-        Long likedBeforeTimestampMinusOneMonth = likedBeforeTimestamp - (60 * 60 * 24 * 30);
+        if (likedBeforeTimestampSeconds == null) {
+            likedBeforeTimestampSeconds = new Date().getTime() / 1000;
+        }
+        Long maxTimeDelta = 15 * 24 * 60 * 60L;
+        Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - maxTimeDelta;
+
         LinkedList<Post> posts = new LinkedList<>();
         boolean morePosts = true;
 
         while (morePosts) {
 
-            TumblrResponse response = tumblrClient.getLikes(name, likedBeforeTimestamp);
+            TumblrResponse response = tumblrClient.getLikes(blogName, likedBeforeTimestampSeconds);
             if (response instanceof TumblrSuccessResponse) {
                 TumblrSuccessResponse success = (TumblrSuccessResponse) response;
                 posts.addAll(success.getPosts());
 
-                Long lastLikedBeforeTimestamp = posts.getLast().getLikedAt();
+                Long lastLikedBeforeTimestampSeconds = posts.getLast().getLikedAt();
 
-                if (likedBeforeTimestamp.equals(lastLikedBeforeTimestamp) || likedBeforeTimestamp <= likedBeforeTimestampMinusOneMonth)
+                if (lastLikedBeforeTimestampSeconds.equals(likedBeforeTimestampSeconds) || lastLikedBeforeTimestampSeconds < likedAfterTimestampSeconds)
                 {
                     morePosts = false;
                 } else {
-                    likedBeforeTimestamp = lastLikedBeforeTimestamp;
+                    likedBeforeTimestampSeconds = lastLikedBeforeTimestampSeconds;
                 }
             } else {
                 String errorMessage = response.getMeta().getMessage();
