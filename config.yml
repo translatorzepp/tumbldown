@@ -1,7 +1,15 @@
-helloWorldTemplate: Hello, %s!
-helloWorldDefaultName: Stranger
-
 logging:
   level: INFO
   loggers:
     zpalmer.tumbldown: DEBUG
+    org.glassfish.jersey.logging.LoggingFeature: DEBUG
+  appenders:
+    - type: console
+    - type: file
+      currentLogFilename: ./logs/dev.log
+      archive: false
+      layout:
+        type: json
+
+helloWorldTemplate: Hello, %s!
+helloWorldDefaultName: Friend

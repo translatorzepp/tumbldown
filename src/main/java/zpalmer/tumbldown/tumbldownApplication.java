@@ -7,6 +7,9 @@ import io.dropwizard.setup.Environment;
 
 import javax.ws.rs.client.Client;
 
+import java.util.logging.Logger;
+import org.glassfish.jersey.logging.LoggingFeature;
+
 import zpalmer.tumbldown.client.Tumblr;
 import zpalmer.tumbldown.resources.BlogResource;
 import zpalmer.tumbldown.resources.HelloWorldResource;
@@ -25,14 +28,15 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<tumbldownConfiguration> bootstrap) {
-        // TODO: application initialization
+        // In the constructor of your Application you can add Bundles and Commands to your application.
     }
 
     @Override
     public void run(final tumbldownConfiguration configuration,
                     final Environment environment) {
         final Client client = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration())
-                .build(getName());
+                .build(getName())
+                .register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME)));
 
         final Tumblr tumblr = new Tumblr(client);
 
