@@ -27,6 +27,7 @@ public class PostsResource {
                                      @QueryParam("searchText") String searchText
     ) {
         Long likedBeforeTimestamp = new Date().getTime();
+        Long likedBeforeTimestampMinusOneMonth = likedBeforeTimestamp - (60 * 60 * 24 * 30);
         LinkedList<Post> posts = new LinkedList<>();
         boolean morePosts = true;
 
@@ -39,7 +40,8 @@ public class PostsResource {
 
                 Long lastLikedBeforeTimestamp = posts.getLast().getLikedAt();
 
-                if (likedBeforeTimestamp.equals(lastLikedBeforeTimestamp)) {
+                if (likedBeforeTimestamp.equals(lastLikedBeforeTimestamp) || likedBeforeTimestamp <= likedBeforeTimestampMinusOneMonth)
+                {
                     morePosts = false;
                 } else {
                     likedBeforeTimestamp = lastLikedBeforeTimestamp;
