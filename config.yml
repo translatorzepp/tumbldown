@@ -1,3 +1,9 @@
+jerseyClient:
+  timeout: 1500ms
+  connectionTimeout: 1500ms
+  connectionRequestTimeout: 1500ms
+  gzipEnabled: true
+
 logging:
   level: INFO
   loggers:
