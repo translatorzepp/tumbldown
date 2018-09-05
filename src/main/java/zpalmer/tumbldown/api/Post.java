@@ -12,16 +12,18 @@ public class Post {
     // TODO: turn this into an abstract class and subclass the various post types, including an unknown type with only the common fields!
 
     private String creatorBlogName;
+    private Integer id;
+    private Long likedAt;
     private String likedFromBlogName;
     private String summary;
     private ArrayList<String> tags;
     private String type;
     private URL url;
-    private Long likedAt;
 
     public Post() { }
 
-    public Post(String summary) {
+    public Post(Integer id, String summary) {
+        this.id = id;
         this.summary = summary;
     }
 
@@ -32,6 +34,7 @@ public class Post {
     public String getCreatorBlogName() { return creatorBlogName; }
 
     @JsonProperty
+    public Integer getId() { return id; }
     public String getSummary() { return summary; }
     public ArrayList<String> getTags() { return tags; }
     public String getType() { return type; }
@@ -42,6 +45,13 @@ public class Post {
     @JsonProperty("liked_timestamp")
     public Long getLikedAt() { return likedAt; }
 
+    public boolean equals(Post otherPost) {
+        if (getId() != null && otherPost.getId() != null) {
+            return getId().equals(otherPost.getId());
+        } else {
+            return super.equals(otherPost);
+        }
+    }
 
     public boolean containsText( String searchText) {
         final String casedSearchText = searchText.toLowerCase();
