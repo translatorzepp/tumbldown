@@ -18,6 +18,7 @@ import zpalmer.tumbldown.client.Tumblr;
 @Produces(MediaType.APPLICATION_JSON)
 public class PostsResource {
     private Tumblr tumblrClient;
+    private Long MAX_TIME_DELTA = 15 * 24 * 60 * 60L; // Tuned to get max posts without timing out
 
     public PostsResource(Tumblr client) { this.tumblrClient = client; }
 
@@ -30,12 +31,18 @@ public class PostsResource {
         if (likedBeforeTimestampSeconds == null) {
             likedBeforeTimestampSeconds = new Date().getTime() / 1000;
         }
-        Long maxTimeDelta = 15 * 24 * 60 * 60L;
-        Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - maxTimeDelta;
+        Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - MAX_TIME_DELTA;
 
         LinkedList<Post> posts = new LinkedList<>();
-        boolean morePosts = true;
+        return searchForLikes(blogName, searchText, likedBeforeTimestampSeconds, likedAfterTimestampSeconds, posts);
+    }
 
+    protected LinkedList<Post> searchForLikes(String blogName,
+                                              String searchText,
+                                              Long likedBeforeTimestampSeconds,
+                                              Long likedAfterTimestampSeconds,
+                                              LinkedList<Post> posts) {
+        boolean morePosts = true;
         while (morePosts) {
 
             TumblrResponse response = tumblrClient.getLikes(blogName, likedBeforeTimestampSeconds);
@@ -60,7 +67,6 @@ public class PostsResource {
         }
 
         return filterPostsBySearchString(posts, Optional.ofNullable(searchText));
-
     }
 
     protected LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, Optional<String> searchText) {
