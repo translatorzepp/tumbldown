@@ -4,6 +4,7 @@ import io.dropwizard.Application;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.views.ViewBundle;
 
 import javax.ws.rs.client.Client;
 
@@ -29,6 +30,7 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
     @Override
     public void initialize(final Bootstrap<tumbldownConfiguration> bootstrap) {
         // In the constructor of your Application you can add Bundles and Commands to your application.
+        bootstrap.addBundle(new ViewBundle<tumbldownConfiguration>());
     }
 
     @Override

@@ -15,7 +15,7 @@ import zpalmer.tumbldown.client.Tumblr;
 
 
 @Path("likes")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(MediaType.TEXT_HTML)
 public class PostsResource {
     private Tumblr tumblrClient;
     private Long MAX_TIME_DELTA = 15 * 24 * 60 * 60L; // Tuned to get max posts without timing out
@@ -24,7 +24,7 @@ public class PostsResource {
 
     @GET
     @Timed
-    public LinkedList<Post> getLikes(@QueryParam("blogName") @NotEmpty String blogName,
+    public PostsView getLikes(@QueryParam("blogName") @NotEmpty String blogName,
                                      @QueryParam("searchText") String searchText,
                                      @QueryParam("before") Long likedBeforeTimestampSeconds
     ) {
@@ -34,7 +34,7 @@ public class PostsResource {
         Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - MAX_TIME_DELTA;
 
         LinkedList<Post> posts = new LinkedList<>();
-        return searchForLikes(blogName, searchText, likedBeforeTimestampSeconds, likedAfterTimestampSeconds, posts);
+        return new PostsView(searchForLikes(blogName, searchText, likedBeforeTimestampSeconds, likedAfterTimestampSeconds, posts));
     }
 
     protected LinkedList<Post> searchForLikes(String blogName,
