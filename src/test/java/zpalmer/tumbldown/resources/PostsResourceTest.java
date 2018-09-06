@@ -16,7 +16,6 @@ public class PostsResourceTest {
     private static Post postWithSearchStringFirst = new Post(12345L, "I feel pretty and witty and gay");
     private static Post postWithoutSearchStringFirst = new Post(35813L, "I feel pretty and witty and bright");
     private static Post postWithoutSearchStringSecond = new Post(8132134L, "and I pity any girl who isn't me to{day|night}");
-    LinkedList<Post> originalPostCollection = new LinkedList<>();
 
     @Test
     public void selectPostsWithSearchTermInSummary() {
