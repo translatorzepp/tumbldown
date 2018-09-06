@@ -54,7 +54,7 @@ public class PostsResource {
             } else {
                 String errorMessage = response.getMeta().getMessage();
                 // TODO: throw an exception instead
-                posts.add(new Post(42, errorMessage));
+                posts.add(new Post(42L, errorMessage));
                 morePosts = false;
             }
         }

@@ -12,7 +12,7 @@ public class Post {
     // TODO: turn this into an abstract class and subclass the various post types, including an unknown type with only the common fields!
 
     private String creatorBlogName;
-    private Integer id;
+    private Long id;
     private Long likedAt;
     private String likedFromBlogName;
     private String summary;
@@ -22,7 +22,7 @@ public class Post {
 
     public Post() { }
 
-    public Post(Integer id, String summary) {
+    public Post(Long id, String summary) {
         this.id = id;
         this.summary = summary;
     }
@@ -34,7 +34,7 @@ public class Post {
     public String getCreatorBlogName() { return creatorBlogName; }
 
     @JsonProperty
-    public Integer getId() { return id; }
+    public Long getId() { return id; }
     public String getSummary() { return summary; }
     public ArrayList<String> getTags() { return tags; }
     public String getType() { return type; }
