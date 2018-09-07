@@ -1,8 +1,12 @@
+/* --- Search spinner --- */
+/* code credit to https://github.com/tobiasahlin/SpinKit, lightly tweaked */
 .spinner {
-  width: 40px;
-  height: 40px;
-  margin: 100px auto;
+  width: 20px;
+  height: 20px;
+  margin: 10px auto;
   background-color: #333;
+
+  float: left;
 
   border-radius: 100%;
   -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
@@ -27,3 +31,4 @@
     opacity: 0;
   }
 }
+/* --- */
