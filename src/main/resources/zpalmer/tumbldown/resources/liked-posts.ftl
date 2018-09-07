@@ -1,6 +1,7 @@
 <body>
-    <h1>Liked Posts</h1>
+    <h1>tumbldown</h1>
 
+    <h3>Liked Posts</h3>
     <#list posts as post>
         <div>
             liked from <strong>${post.likedFromBlogName}</strong>:
@@ -11,4 +12,6 @@
         </div>
         <br></br>
     </#list>
+
+    <a href="/search">Search again</a>
 </body>

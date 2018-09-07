@@ -15,6 +15,7 @@ import zpalmer.tumbldown.client.Tumblr;
 import zpalmer.tumbldown.resources.BlogResource;
 import zpalmer.tumbldown.resources.HelloWorldResource;
 import zpalmer.tumbldown.resources.PostsResource;
+import zpalmer.tumbldown.resources.SearchResource;
 
 public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
@@ -47,6 +48,9 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
         final PostsResource postsResource = new PostsResource(tumblr);
         environment.jersey().register(postsResource);
+
+        final SearchResource searchResource = new SearchResource();
+        environment.jersey().register(searchResource);
 
         final HelloWorldResource helloResource = new HelloWorldResource(
                 configuration.getHelloWorldTemplate(),
