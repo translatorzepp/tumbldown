@@ -1,6 +1,7 @@
 package zpalmer.tumbldown;
 
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -32,6 +33,7 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
     public void initialize(final Bootstrap<tumbldownConfiguration> bootstrap) {
         // In the constructor of your Application you can add Bundles and Commands to your application.
         bootstrap.addBundle(new ViewBundle<tumbldownConfiguration>());
+        bootstrap.addBundle(new AssetsBundle());
     }
 
     @Override
