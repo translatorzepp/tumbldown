@@ -34,7 +34,9 @@ public class PostsResource {
         Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - MAX_TIME_DELTA;
 
         LinkedList<Post> posts = new LinkedList<>();
-        return new PostsView(searchForLikes(blogName, searchText, likedBeforeTimestampSeconds, likedAfterTimestampSeconds, posts));
+        return new PostsView(
+                searchForLikes(blogName, searchText, likedBeforeTimestampSeconds, likedAfterTimestampSeconds, posts),
+                searchText);
     }
 
     protected LinkedList<Post> searchForLikes(String blogName,

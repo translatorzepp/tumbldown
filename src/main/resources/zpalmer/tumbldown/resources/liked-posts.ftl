@@ -5,6 +5,8 @@
 <body>
     <h1>tumbldown</h1>
 
+    <#if originalSearch??><p>Search text: <strong>${originalSearch}</strong></p></#if>
+
     <h3>Liked Posts</h3>
     <#list posts as post>
         <div>
