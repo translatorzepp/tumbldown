@@ -1,10 +1,23 @@
+body {
+  background: #36465d; /* tumblr blue */
+  font-family: sans-serif;
+  color: white;
+}
+
+a:link {
+  color: white;
+}
+a:visited {
+  color: lightgrey;
+}
+
 /* --- Search spinner --- */
 /* code credit to https://github.com/tobiasahlin/SpinKit, lightly tweaked */
 .spinner {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   margin: 10px auto;
-  background-color: #333;
+  background-color: #f0f8ff;
 
   float: left;
 
