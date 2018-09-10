@@ -18,7 +18,7 @@ import zpalmer.tumbldown.client.Tumblr;
 @Produces(MediaType.TEXT_HTML)
 public class PostsResource {
     private Tumblr tumblrClient;
-    private Long MAX_TIME_DELTA = 15 * 24 * 60 * 60L; // Tuned to get max posts without timing out
+    private Long MAX_TIME_DELTA = 10 * 24 * 60 * 60L; // Tuned to get max posts without timing out
 
     public PostsResource(Tumblr client) { this.tumblrClient = client; }
 
