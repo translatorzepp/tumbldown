@@ -1,12 +1,17 @@
 package zpalmer.tumbldown.resources;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
 import org.junit.Test;
 import zpalmer.tumbldown.api.Post;
+import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
+import zpalmer.tumbldown.api.tumblr.TumblrResponseMeta;
 import zpalmer.tumbldown.client.Tumblr;
+
+import javax.ws.rs.WebApplicationException;
 
 
 public class PostsResourceTest {
@@ -45,5 +50,18 @@ public class PostsResourceTest {
         boolean resultOfFilter = originalPostCollection.removeIf(post -> post.containsText(searchString.get()));
 
         assertThat(resultOfFilter).isTrue();
+    }
+
+    @Test
+    public void returnsErrors() {
+        Tumblr failTumblr = mock(Tumblr.class);
+        when(failTumblr.getLikes("secret-blog", 1L)).thenReturn(new TumblrFailureResponse(
+                new TumblrResponseMeta("Forbidden", 403)
+        ));
+        PostsResource failPostResource = new PostsResource(failTumblr);
+
+        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
+            failPostResource.getLikes("secret-blog", "test", 1L);
+        }).withMessageContaining("secret-blog's likes are not public.");
     }
 }

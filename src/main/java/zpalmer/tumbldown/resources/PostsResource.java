@@ -61,10 +61,18 @@ public class PostsResource {
                     likedBeforeTimestampSeconds = lastLikedBeforeTimestampSeconds;
                 }
             } else {
-                String errorMessage = response.getMeta().getMessage();
-                // TODO: throw an exception instead
-                posts.add(new Post(42L, errorMessage));
-                morePosts = false;
+                int tumblrErrorStatusCode = response.getMeta().getStatus();
+                String errorDetails;
+                if (tumblrErrorStatusCode == 403) {
+                    errorDetails = blogName + "'s likes are not public.";
+                } else if (tumblrErrorStatusCode == 404) {
+                    errorDetails = blogName + " does not exist.";
+                } else if(tumblrErrorStatusCode >= 500) {
+                    errorDetails= "Tumblr is down or unreachable.";
+                } else {
+                    errorDetails = "Unknown error: " + tumblrErrorStatusCode + ".";
+                }
+                throw new WebApplicationException(errorDetails, tumblrErrorStatusCode);
             }
         }
 

@@ -3,20 +3,22 @@ package zpalmer.tumbldown;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.jersey.errors.ErrorEntityWriter;
+import io.dropwizard.jersey.errors.ErrorMessage;
+import io.dropwizard.jersey.validation.ValidationErrorMessage;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.dropwizard.views.View;
 import io.dropwizard.views.ViewBundle;
 
 import javax.ws.rs.client.Client;
+import javax.ws.rs.core.MediaType;
 
 import java.util.logging.Logger;
 import org.glassfish.jersey.logging.LoggingFeature;
 
 import zpalmer.tumbldown.client.Tumblr;
-import zpalmer.tumbldown.resources.BlogResource;
-import zpalmer.tumbldown.resources.HelloWorldResource;
-import zpalmer.tumbldown.resources.PostsResource;
-import zpalmer.tumbldown.resources.SearchResource;
+import zpalmer.tumbldown.resources.*;
 
 public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
@@ -53,6 +55,20 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
         final SearchResource searchResource = new SearchResource();
         environment.jersey().register(searchResource);
+
+        environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {
+            @Override
+            protected View getRepresentation(ErrorMessage errorMessage) {
+                return new ErrorView(errorMessage);
+            }
+        });
+
+        environment.jersey().register(new ErrorEntityWriter<ValidationErrorMessage,View>(MediaType.TEXT_HTML_TYPE, View.class) {
+            @Override
+            protected View getRepresentation(ValidationErrorMessage validationErrorMessage) {
+                return new ErrorView(validationErrorMessage);
+            }
+        });
 
         final HelloWorldResource helloResource = new HelloWorldResource(
                 configuration.getHelloWorldTemplate(),

@@ -8,6 +8,11 @@ public class TumblrResponseMeta {
 
     public TumblrResponseMeta() {}
 
+    public TumblrResponseMeta(String message, int status) {
+        this.message = message;
+        this.status = status;
+    }
+
     @JsonProperty("msg")
     public String getMessage() { return message; }
 

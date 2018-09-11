@@ -14,9 +14,11 @@
             <a href="${post.url}" target="_blank">summary: ${post.summary}</a>
             <small><i>${post.type}</i></small>
             </br>
-            <div id="tags" style="text-indent:2em">tagged:<i><#list post.tags as tag> #${tag}</i><#else> no tags</#list></div>
+            <div id="tags" style="text-indent:2em">tagged:<#list post.tags as tag><i> #${tag}</i><#else> no tags</#list></div>
         </div>
         <br></br>
+    <#else>
+        <p>No posts found!</p>
     </#list>
 
     <h3><a href="/search">Search again</a></h3>

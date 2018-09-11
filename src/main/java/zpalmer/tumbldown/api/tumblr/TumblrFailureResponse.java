@@ -7,5 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TumblrFailureResponse extends TumblrResponse {
 
     public TumblrFailureResponse() {}
+    public TumblrFailureResponse(TumblrResponseMeta meta) {
+        super(meta);
+    }
 
 }
