@@ -25,7 +25,9 @@ public class BlogResource {
     @GET
     @Timed
     public Blog getTumblrBlog(@QueryParam("blogName") @NotEmpty String name) {
+        name = Blog.sanitizeBlogName(name);
         TumblrResponse response = tumblrClient.getBlog(name);
+
         if (response instanceof TumblrSuccessResponse) {
             TumblrSuccessResponse success = (TumblrSuccessResponse) response;
             return success.getBlog();

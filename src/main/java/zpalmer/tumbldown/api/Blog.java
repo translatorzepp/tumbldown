@@ -21,4 +21,8 @@ public class Blog {
 
     @JsonProperty("likes")
     public long getNumberOfLikes() { return numberOfLikes; }
+
+    public static String sanitizeBlogName(String name) {
+        return name.replace(".tumblr.com", "").trim();
+    }
 }

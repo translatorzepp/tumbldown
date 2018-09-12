@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import zpalmer.tumbldown.api.Blog;
 import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
@@ -18,7 +19,7 @@ import zpalmer.tumbldown.client.Tumblr;
 @Produces(MediaType.TEXT_HTML)
 public class PostsResource {
     private Tumblr tumblrClient;
-    private Long MAX_TIME_DELTA = 10 * 24 * 60 * 60L; // Tuned to get max posts without timing out
+    private Long MAX_TIME_DELTA_SECONDS = 10 * 24 * 60 * 60L; // Tuned to get max posts without timing out
 
     public PostsResource(Tumblr client) { this.tumblrClient = client; }
 
@@ -31,7 +32,9 @@ public class PostsResource {
         if (likedBeforeTimestampSeconds == null) {
             likedBeforeTimestampSeconds = new Date().getTime() / 1000;
         }
-        Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - MAX_TIME_DELTA;
+        Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
+
+        blogName = Blog.sanitizeBlogName(blogName);
 
         LinkedList<Post> posts = new LinkedList<>();
         return new PostsView(
