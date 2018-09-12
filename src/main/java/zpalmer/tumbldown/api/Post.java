@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -25,6 +26,12 @@ public class Post {
     public Post(Long id, String summary) {
         this.id = id;
         this.summary = summary;
+    }
+
+    public Post(Long id, String summary, ArrayList<String> tags) {
+        this.id = id;
+        this.summary = summary;
+        this.tags = tags;
     }
 
     @JsonProperty("blog_name")
@@ -53,14 +60,20 @@ public class Post {
         }
     }
 
-    public boolean containsText( String searchText) {
+    public boolean containsText(String searchText) {
         final String casedSearchText = searchText.toLowerCase();
 
         if (getSummary().toLowerCase().contains(casedSearchText)) {
             return true;
         }
 
-        // TO DO: add searching of tags and other text-based fields
+        if (getTags() != null) {
+            Optional<String> matchingTag =
+                    getTags().stream().filter(tag -> tag.toLowerCase().contains(casedSearchText)).findFirst();
+            if (matchingTag.isPresent()) {
+                return true;
+            }
+        }
 
         return false;
     }

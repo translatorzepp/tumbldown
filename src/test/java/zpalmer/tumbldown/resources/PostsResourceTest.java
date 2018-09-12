@@ -22,6 +22,9 @@ public class PostsResourceTest {
     private static Post postWithoutSearchStringFirst = new Post(35813L, "I feel pretty and witty and bright");
     private static Post postWithoutSearchStringSecond = new Post(8132134L, "and I pity any girl who isn't me to{day|night}");
 
+    private static Post postWithSearchStringInTag = new Post(11235L, "I love my wife!",
+            new ArrayList<>(Arrays.asList("gay")));
+
     @Test
     public void selectPostsWithSearchTermInSummary() {
         LinkedList<Post> originalPostCollection = new LinkedList<>();
@@ -33,12 +36,28 @@ public class PostsResourceTest {
         Post postWithoutSearchStringFirst = originalPostCollection.get(0);
         Post postWithoutSearchStringSecond = originalPostCollection.get(2);
 
-        Collection<Post> searchResultsPostCollection = POSTS_RESOURCE
+        Collection<Post> searchResults = POSTS_RESOURCE
                 .filterPostsBySearchString(originalPostCollection, searchString);
 
-        assertThat(searchResultsPostCollection).contains(postWithSearchString);
-        assertThat(searchResultsPostCollection).doesNotContain(postWithoutSearchStringFirst);
-        assertThat(searchResultsPostCollection).doesNotContain(postWithoutSearchStringSecond);
+        assertThat(searchResults).contains(postWithSearchString);
+        assertThat(searchResults).doesNotContain(postWithoutSearchStringFirst);
+        assertThat(searchResults).doesNotContain(postWithoutSearchStringSecond);
+    }
+
+    @Test
+    public void selectsPostsWithSearchTermInSummary() {
+        LinkedList<Post> originalPostCollection = new LinkedList<>();
+        originalPostCollection.add(0, postWithSearchStringInTag);
+        originalPostCollection.add(1, postWithoutSearchStringSecond);
+
+        Post postWithSearchStringInTag = originalPostCollection.get(0);
+        Post postWithoutSearchString = originalPostCollection.get(1);
+
+        Collection<Post> searchResults = POSTS_RESOURCE
+                .filterPostsBySearchString(originalPostCollection, searchString);
+
+        assertThat(searchResults).contains(postWithSearchStringInTag);
+        assertThat(searchResults).doesNotContain(postWithoutSearchString);
     }
 
     @Test
