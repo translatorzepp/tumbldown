@@ -2,10 +2,7 @@ package zpalmer.tumbldown.resources;
 
 import com.codahale.metrics.annotation.Timed;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -33,9 +30,18 @@ public class BlogResource {
             TumblrSuccessResponse success = (TumblrSuccessResponse) response;
             return success.getBlog();
         } else {
-            String errorMessage = ((TumblrFailureResponse) response).getMeta().getMessage();
-            // TODO: throw an exception instead
-            return new Blog(errorMessage, 0);
+            int tumblrErrorStatusCode = response.getMeta().getStatus();
+            String errorDetails;
+            if (tumblrErrorStatusCode == 403) {
+                errorDetails = name + " has restricted access to their blog.";
+            } else if (tumblrErrorStatusCode == 404) {
+                errorDetails = name + " does not exist.";
+            } else if(tumblrErrorStatusCode >= 500) {
+                errorDetails= "Tumblr is down or unreachable.";
+            } else {
+                errorDetails = "Unknown error: " + tumblrErrorStatusCode + ".";
+            }
+            throw new WebApplicationException(errorDetails, tumblrErrorStatusCode);
         }
     }
 }
