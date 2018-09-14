@@ -5,7 +5,7 @@
 <body>
     <h1>tumbldown</h1>
 
-    <#if originalSearch??><p>Search text: <strong>${originalSearch}</strong></p></#if>
+    <#if originalSearch?? && originalSearch != ""><p>Search text: <strong><i>${originalSearch}</strong></i></p></#if>
 
     <h3>Liked Posts</h3>
     <#list posts as post>
