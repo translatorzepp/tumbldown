@@ -23,8 +23,6 @@ public class Tumblr {
         this.client = client;
     }
 
-    // TODO: handle exceptions thrown by the client
-
     public TumblrResponse getBlog(String name) {
         // api.tumblr.com/v2/blog/{blog-identifier}/info?api_key={key}
         WebTarget target = target("blog/" + name + ".tumblr.com/" + "info");
@@ -45,6 +43,7 @@ public class Tumblr {
     }
 
     private TumblrResponse makeRequestAndRespondToSuccessOrFailure(Invocation.Builder invocationBuilder) {
+        // TODO: do we need to handle exceptions thrown here?
         Response response = invocationBuilder.get();
 
         if (response.getStatus() == 200) {
