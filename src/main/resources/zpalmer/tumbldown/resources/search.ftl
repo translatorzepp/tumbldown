@@ -7,11 +7,11 @@
     <h3>Search</h3>
 
     <div id="search-form">
-        <form action="/likes" method="get" onsubmit="document.getElementsByClassName('spinner')[0].removeAttribute('hidden');">
+        <form action="/likes" method="get" onsubmit="document.getElementById('searching-spinner').removeAttribute('hidden');">
             <input type="text" id="blogName" name="blogName" placeholder="tumbldown-app" required></input>
             <input type="search" id="searchText" name="searchText" placeholder="thing to search for"></input>
             <button type="submit">Search</button>
         </form>
     </div>
-    <div class="spinner" hidden="hidden"></div>
+    <div class="spinner" id="searching-spinner" hidden="hidden"></div>
 </body>
