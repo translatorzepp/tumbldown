@@ -71,6 +71,7 @@ public class PostsResourceTest {
         assertThat(resultOfFilter).isTrue();
     }
 
+// TODO: rethink error handling and come up with new appropriate tests
 //    @Test
 //    public void returnsErrors() {
 //        Tumblr failTumblr = mock(Tumblr.class);

@@ -18,7 +18,7 @@ import zpalmer.tumbldown.client.Tumblr;
 
 
 @Path("likes")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)// TODO: add a class (a MessageWriter?) that knows how to serialize posts as HTML, and switch this to TEXT_HTML
 public class PostsResource {
     private Tumblr tumblrClient;
     private Long MAX_TIME_DELTA_SECONDS = 14 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out

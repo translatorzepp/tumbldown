@@ -5,6 +5,7 @@ import zpalmer.tumbldown.api.Post;
 
 import java.util.LinkedList;
 
+// TODO: remove
 public class PostsView extends View {
     private final LinkedList<Post> posts;
     private final String originalSearch;

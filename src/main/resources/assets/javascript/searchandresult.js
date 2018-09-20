@@ -14,6 +14,7 @@ function search() {
 
         document.getElementById('searchResults').innerHTML = null;
 
+        // TODO: error handling
         var xhr = new XMLHttpRequest();
         var searchEndpoint = "/likes?blogName=" + blogName + "&searchText=" + searchText;
 

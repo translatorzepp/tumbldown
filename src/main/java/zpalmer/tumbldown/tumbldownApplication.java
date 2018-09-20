@@ -41,6 +41,7 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
     @Override
     public void run(final tumbldownConfiguration configuration,
                     final Environment environment) {
+        // TODO: add healthchecks
         final Client client = new JerseyClientBuilder(environment).using(configuration.getJerseyClientConfiguration())
                 .build(getName())
                 .register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME)));
