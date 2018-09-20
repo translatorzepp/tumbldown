@@ -18,57 +18,48 @@ import zpalmer.tumbldown.client.Tumblr;
 
 
 @Path("likes")
-//@Produces(MediaType.TEXT_HTML)
 @Produces(MediaType.APPLICATION_JSON)
 public class PostsResource {
     private Tumblr tumblrClient;
-    private Long MAX_TIME_DELTA_SECONDS = 14 * 24 * 60 * 60L; // Tuned to get max posts without timing out
+    private Long MAX_TIME_DELTA_SECONDS = 14 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out
 
     public PostsResource(Tumblr client) { this.tumblrClient = client; }
 
     @GET
     @Timed
-    public PostsView getLikes(@QueryParam("blogName") @NotEmpty String blogName,
-                                     @QueryParam("searchText") String searchText,
-                                     @QueryParam("before") Long likedBeforeTimestampSeconds
+    public ChunkedOutput<Post> getLikes(@QueryParam("blogName") @NotEmpty String blogName,
+                                        @QueryParam("searchText") String searchText,
+                                        @QueryParam("before") Long beforeTimestampSeconds
     ) {
-        if (likedBeforeTimestampSeconds == null) {
-            likedBeforeTimestampSeconds = new Date().getTime() / 1000;
-        }
-        Long likedAfterTimestampSeconds = likedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
-
-        blogName = Blog.sanitizeBlogName(blogName);
-
-        LinkedList<Post> posts = new LinkedList<>();
-        return new PostsView(
-                searchForLikes(blogName, searchText, likedBeforeTimestampSeconds, likedAfterTimestampSeconds, posts),
-                searchText);
-    }
-
-    @GET
-    @Path("chunked")
-    @Timed
-    public ChunkedOutput<Post> getChunkedPostsResponse(@QueryParam("blogName") @NotEmpty String blogName,
-                                                       @QueryParam("searchText") String searchText)
-    {
-        final ChunkedOutput<Post> output = new ChunkedOutput<Post>(Post.class);
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
+
+        final Long initialLikedBeforeTimestampSeconds;
+        if (beforeTimestampSeconds == null) {
+            initialLikedBeforeTimestampSeconds = new Date().getTime() / 1000;
+        } else {
+            initialLikedBeforeTimestampSeconds = beforeTimestampSeconds;
+        }
+        final Long likedAfterTimestampSeconds = initialLikedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
+
+        ChunkedOutput<Post> output = new ChunkedOutput<Post>(Post.class);
 
         new Thread() {
             public void run() {
                 try {
                     LinkedList<Post> posts;
-                    Long likedBeforeTimestampSeconds = new Date().getTime() / 1000;
+                    Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
 
                     try {
-                        while ((posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)) != null) {
-                            likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
+                        while ((likedBeforeTimestampSeconds >= likedAfterTimestampSeconds) &&
+                                (posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)) != null) {
 
+                            likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
                             filterPostsBySearchString(posts, Optional.ofNullable(searchText)).forEach(post -> {
                                 try {
                                     output.write(post);
                                 } catch (IOException e) {
-
+                                    // TODO: better exceptions!
+                                    throw new WebApplicationException("IOException: " + e.getMessage());
                                 }
                             });
                         }

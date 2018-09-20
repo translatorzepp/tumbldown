@@ -1,28 +1,49 @@
 function showSearchSpinner() {
-    document.getElementById('searching-spinner').removeAttribute('hidden');
+    document.getElementById("searchingSpinner").removeAttribute("hidden");
 }
 
 function hideSearchSpinner() {
-    document.getElementById('searching-spinner').setAttribute('hidden', 'hidden');
+    document.getElementById("searchingSpinner").setAttribute("hidden", "hidden");
 }
 
 function search() {
-    showSearchSpinner();
+    var blogName = document.getElementById("blogName").value;
+    var searchText = document.getElementById("searchText").value;
 
-    var xhr = new XMLHttpRequest()
-    xhr.open("GET", "/likes/chunked?blogName=ritterssport", true)
-    xhr.onprogress = function () {
-        document.getElementById('results').innerHTML = xhr.responseText;
+    if (validateSearchInput(blogName, searchText)) {
+
+        document.getElementById('searchResults').innerHTML = null;
+
+        var xhr = new XMLHttpRequest();
+        var searchEndpoint = "/likes?blogName=" + blogName + "&searchText=" + searchText;
+
+        xhr.open("GET", searchEndpoint, true);
+        xhr.onprogress = function () {
+            document.getElementById('searchResults').innerHTML = xhr.responseText;
+        }
+        xhr.onload = function () {
+            hideSearchSpinner();
+        }
+        .onerror = function () {
+            console.log("** An error occurred during search **");
+            hideSearchSpinner();
+        }
+        .onabort = function() {
+            hideSearchSpinner();
+        }
+
+        showSearchSpinner();
+
+        xhr.send();
+    } else {
+        alert("Specify the name of a blog to search!");
     }
-    xhr.onload = function () {
-        hideSearchSpinner()
+}
+
+function validateSearchInput(blog, text) {
+    if (blog.length > 0) {
+        return true;
+    } else {
+        return false;
     }
-    .onerror = function () {
-        console.log("** An error occurred during search **");
-        hideSearchSpinner()
-    }
-    .onabort = function() {
-        hideSearchSpinner()
-    }
-    xhr.send()
 }

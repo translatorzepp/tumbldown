@@ -71,29 +71,29 @@ public class PostsResourceTest {
         assertThat(resultOfFilter).isTrue();
     }
 
-    @Test
-    public void returnsErrors() {
-        Tumblr failTumblr = mock(Tumblr.class);
-        when(failTumblr.getLikes("secret-blog", 1L)).thenReturn(new TumblrFailureResponse(
-                new TumblrResponseMeta("Forbidden", 403)
-        ));
-        PostsResource failPostResource = new PostsResource(failTumblr);
-
-        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
-            failPostResource.getLikes("secret-blog", "test", 1L);
-        }).withMessageContaining("secret-blog's likes are not public.");
-    }
-
-    @Test
-    public void returnsUnexpectedErrors() {
-        Tumblr failTumblr = mock(Tumblr.class);
-        when(failTumblr.getLikes("unsecret-blog", 1L)).thenReturn(new TumblrFailureResponse(
-                new TumblrResponseMeta(":dull_surprise: tumblr is down.", 503)
-        ));
-        PostsResource failPostResource = new PostsResource(failTumblr);
-
-        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
-            failPostResource.getLikes("unsecret-blog", "test", 1L);
-        }).withMessageContaining("Tumblr is down or unreachable.");
-    }
+//    @Test
+//    public void returnsErrors() {
+//        Tumblr failTumblr = mock(Tumblr.class);
+//        when(failTumblr.getLikes("secret-blog", 1L)).thenReturn(new TumblrFailureResponse(
+//                new TumblrResponseMeta("Forbidden", 403)
+//        ));
+//        PostsResource failPostResource = new PostsResource(failTumblr);
+//
+//        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
+//            failPostResource.getLikes("secret-blog", "test", 1L);
+//        }).withMessageContaining("secret-blog's likes are not public.");
+//    }
+//
+//    @Test
+//    public void returnsUnexpectedErrors() {
+//        Tumblr failTumblr = mock(Tumblr.class);
+//        when(failTumblr.getLikes("unsecret-blog", 1L)).thenReturn(new TumblrFailureResponse(
+//                new TumblrResponseMeta(":dull_surprise: tumblr is down.", 503)
+//        ));
+//        PostsResource failPostResource = new PostsResource(failTumblr);
+//
+//        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
+//            failPostResource.getLikes("unsecret-blog", "test", 1L);
+//        }).withMessageContaining("Tumblr is down or unreachable.");
+//    }
 }
