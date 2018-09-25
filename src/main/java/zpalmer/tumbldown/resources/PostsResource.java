@@ -43,38 +43,36 @@ public class PostsResource {
 
         ChunkedOutput<SinglePostView> output = new ChunkedOutput<SinglePostView>(SinglePostView.class);
 
-        new Thread() {
-            public void run() {
+        new Thread(() -> {
+            try {
+                LinkedList<Post> posts;
+                Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
+
                 try {
-                    LinkedList<Post> posts;
-                    Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
+                    while ((likedBeforeTimestampSeconds >= likedAfterTimestampSeconds) &&
+                            (posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)) != null) {
 
-                    try {
-                        while ((likedBeforeTimestampSeconds >= likedAfterTimestampSeconds) &&
-                                (posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)) != null) {
-
-                            likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
-                            filterPostsBySearchString(posts, Optional.ofNullable(searchText)).forEach(post -> {
-                                try {
-                                    output.write(new SinglePostView(post));
-                                } catch (IOException e) {
-                                    // TODO: better exceptions!
-                                    throw new WebApplicationException("IOException: " + e.getMessage());
-                                }
-                            });
-                        }
-                    } catch (WebApplicationException e) {
-                        throw e;
+                        likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
+                        filterPostsBySearchString(posts, Optional.ofNullable(searchText)).forEach(post -> {
+                            try {
+                                output.write(new SinglePostView(post));
+                            } catch (IOException e) {
+                                // TODO: better exceptions!
+                                throw new WebApplicationException("IOException: " + e.getMessage());
+                            }
+                        });
                     }
-                } finally {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        throw new WebApplicationException("Unknown error.");
-                    }
+                } catch (WebApplicationException e) {
+                    throw e;
+                }
+            } finally {
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    throw new WebApplicationException("Unknown error.");
                 }
             }
-        }.start();
+        }).start();
 
         return output;
     }
@@ -84,8 +82,7 @@ public class PostsResource {
 
         if (response instanceof TumblrSuccessResponse) {
             TumblrSuccessResponse success = (TumblrSuccessResponse) response;
-            LinkedList<Post> posts = new LinkedList<Post>(success.getPosts());
-            return posts;
+            return new LinkedList<Post>(success.getPosts());
         } else {
             int tumblrErrorStatusCode = response.getMeta().getStatus();
             String errorDetails;
@@ -103,9 +100,7 @@ public class PostsResource {
     }
 
     protected LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, Optional<String> searchText) {
-        if (searchText.isPresent()) {
-            posts.removeIf(post -> !post.containsText(searchText.get()));
-        }
+        searchText.ifPresent(s -> posts.removeIf(post -> !post.containsText(s)));
         return posts;
     }
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 public class TumblrSuccessResponse extends TumblrResponse {
     private Blog blog;
     private Collection<Post> posts;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public TumblrSuccessResponse() { }
 

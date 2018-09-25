@@ -47,9 +47,7 @@ public class Tumblr {
         Response response = invocationBuilder.get();
 
         if (response.getStatus() == 200) {
-            TumblrSuccessResponse successResponse = response.readEntity(TumblrSuccessResponse.class);
-
-            return successResponse;
+            return response.readEntity(TumblrSuccessResponse.class);
         } else {
             System.out.println(response.getHeaders().toString());
 

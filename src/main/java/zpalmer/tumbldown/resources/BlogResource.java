@@ -8,7 +8,6 @@ import javax.ws.rs.core.MediaType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import zpalmer.tumbldown.api.Blog;
-import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;

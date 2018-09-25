@@ -70,9 +70,7 @@ public class Post {
         if (getTags() != null) {
             Optional<String> matchingTag =
                     getTags().stream().filter(tag -> tag.toLowerCase().contains(casedSearchText)).findFirst();
-            if (matchingTag.isPresent()) {
-                return true;
-            }
+            return matchingTag.isPresent();
         }
 
         return false;
