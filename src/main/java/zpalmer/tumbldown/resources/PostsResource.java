@@ -50,20 +50,30 @@ public class PostsResource {
 
                 try {
                     while ((likedBeforeTimestampSeconds >= likedAfterTimestampSeconds) &&
-                            (posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)) != null) {
+                            (!(posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)).isEmpty())) {
 
                         likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
-                        filterPostsBySearchString(posts, Optional.ofNullable(searchText)).forEach(post -> {
-                            try {
-                                output.write(new SinglePostView(post));
-                            } catch (IOException e) {
-                                // TODO: better exceptions!
-                                throw new WebApplicationException("IOException: " + e.getMessage());
-                            }
-                        });
+
+                        if (!searchText.isEmpty()) {
+                            filterPostsBySearchString(posts, searchText).forEach(post -> {
+                                try {
+                                    output.write(new SinglePostView(post));
+                                } catch (IOException e) {
+                                    // TODO: exceptions need to go somewhere! close output with error?
+                                }
+                            });
+                        } else {
+                            posts.forEach(post -> {
+                                try {
+                                    output.write(new SinglePostView(post));
+                                } catch (IOException e) {
+                                    // TODO: exceptions need to go somewhere! close output with error?
+                                }
+                            });
+                        }
                     }
                 } catch (WebApplicationException e) {
-                    throw e;
+                    // TODO: exceptions need to go somewhere! close output with error?
                 }
             } finally {
                 try {
@@ -99,8 +109,8 @@ public class PostsResource {
         }
     }
 
-    protected LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, Optional<String> searchText) {
-        searchText.ifPresent(s -> posts.removeIf(post -> !post.containsText(s)));
+    protected LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, String searchText) {
+        posts.removeIf(post -> !post.containsText(searchText));
         return posts;
     }
 }
