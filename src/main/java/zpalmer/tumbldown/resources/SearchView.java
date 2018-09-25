@@ -4,6 +4,6 @@ import io.dropwizard.views.View;
 
 public class SearchView extends View {
     public SearchView() {
-        super("search.ftl");
+        super("search.ftlh");
     }
 }

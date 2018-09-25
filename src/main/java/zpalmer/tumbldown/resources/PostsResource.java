@@ -18,7 +18,7 @@ import zpalmer.tumbldown.client.Tumblr;
 
 
 @Path("likes")
-@Produces(MediaType.APPLICATION_JSON)// TODO: add a class (a MessageWriter?) that knows how to serialize posts as HTML, and switch this to TEXT_HTML
+@Produces(MediaType.TEXT_HTML)
 public class PostsResource {
     private Tumblr tumblrClient;
     private Long MAX_TIME_DELTA_SECONDS = 14 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out
@@ -27,7 +27,7 @@ public class PostsResource {
 
     @GET
     @Timed
-    public ChunkedOutput<Post> getLikes(@QueryParam("blogName") @NotEmpty String blogName,
+    public ChunkedOutput<SinglePostView> getLikes(@QueryParam("blogName") @NotEmpty String blogName,
                                         @QueryParam("searchText") String searchText,
                                         @QueryParam("before") Long beforeTimestampSeconds
     ) {
@@ -41,7 +41,7 @@ public class PostsResource {
         }
         final Long likedAfterTimestampSeconds = initialLikedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
 
-        ChunkedOutput<Post> output = new ChunkedOutput<Post>(Post.class);
+        ChunkedOutput<SinglePostView> output = new ChunkedOutput<SinglePostView>(SinglePostView.class);
 
         new Thread() {
             public void run() {
@@ -56,7 +56,7 @@ public class PostsResource {
                             likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
                             filterPostsBySearchString(posts, Optional.ofNullable(searchText)).forEach(post -> {
                                 try {
-                                    output.write(post);
+                                    output.write(new SinglePostView(post));
                                 } catch (IOException e) {
                                     // TODO: better exceptions!
                                     throw new WebApplicationException("IOException: " + e.getMessage());

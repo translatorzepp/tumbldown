@@ -15,6 +15,7 @@
     <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
     <br/>
     <br/>
+    <br/>
 
     <div class="posts" id="searchResults"></div>
 </body>
