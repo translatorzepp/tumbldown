@@ -13,29 +13,36 @@ function search() {
     if (validateSearchInput(blogName, searchText)) {
 
         document.getElementById('searchResults').innerHTML = null;
+        document.getElementById('errorMessage').innerHTML = null;
 
         // TODO: error handling
-        var xhr = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
         var searchEndpoint = "/likes?blogName=" + blogName + "&searchText=" + searchText;
 
-        xhr.open("GET", searchEndpoint, true);
-        xhr.onprogress = function () {
-            document.getElementById('searchResults').innerHTML = xhr.responseText;
+        request.open("GET", searchEndpoint, true);
+        request.onprogress = function () {
+            console.log("*** onprogress fired ***");
+            document.getElementById('searchResults').innerHTML = request.responseText;
         }
-        xhr.onload = function () {
+        request.onload = function () {
+            document.getElementById('searchResults').innerHTML = request.responseText;
+            hideSearchSpinner();
+            if (request.status != 200) {
+                document.getElementById('errorMessage').innerHTML = request.errorMessage;
+            }
+        }
+        request.onerror = function () {
+            console.log(request.errorMessage);
+            document.getElementById('errorMessage').innerHTML = "Something went wrong!";
             hideSearchSpinner();
         }
-        .onerror = function () {
-            console.log("** An error occurred during search **");
-            hideSearchSpinner();
-        }
-        .onabort = function() {
+        request.onabort = function() {
             hideSearchSpinner();
         }
 
         showSearchSpinner();
 
-        xhr.send();
+        request.send();
     } else {
         alert("Specify the name of a blog to search!");
     }

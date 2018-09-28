@@ -18,4 +18,5 @@
     <br/>
 
     <div class="posts" id="searchResults"></div>
+    <div class="error" id="errorMessage"></div>
 </body>
