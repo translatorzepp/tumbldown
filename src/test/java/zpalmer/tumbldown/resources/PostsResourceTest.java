@@ -17,13 +17,13 @@ import javax.ws.rs.WebApplicationException;
 public class PostsResourceTest {
     private static PostsResource POSTS_RESOURCE = new PostsResource(mock(Tumblr.class));
 
-    private static Optional<String> searchString = Optional.of("gay");
+    private static String searchString = "gay";
     private static Post postWithSearchStringFirst = new Post(12345L, "I feel pretty and witty and gay");
     private static Post postWithoutSearchStringFirst = new Post(35813L, "I feel pretty and witty and bright");
     private static Post postWithoutSearchStringSecond = new Post(8132134L, "and I pity any girl who isn't me to{day|night}");
 
     private static Post postWithSearchStringInTag = new Post(11235L, "I love my wife!",
-            new ArrayList<>(Arrays.asList("gay")));
+            new ArrayList<>(Collections.singletonList("gay")));
 
     @Test
     public void selectPostsWithSearchTermInSummary() {
@@ -66,7 +66,7 @@ public class PostsResourceTest {
         originalPostCollection.add(postWithoutSearchStringFirst);
         originalPostCollection.add(postWithSearchStringFirst);
 
-        boolean resultOfFilter = originalPostCollection.removeIf(post -> post.containsText(searchString.get()));
+        boolean resultOfFilter = originalPostCollection.removeIf(post -> post.containsText(searchString));
 
         assertThat(resultOfFilter).isTrue();
     }
