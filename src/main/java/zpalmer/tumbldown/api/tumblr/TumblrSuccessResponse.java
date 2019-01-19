@@ -16,6 +16,8 @@ public class TumblrSuccessResponse extends TumblrResponse {
     private Blog blog;
     private Collection<Post> posts;
     private final ObjectMapper mapper = new ObjectMapper();
+    // TODO: fix the shitty workaround in Post.java with a real conversion here
+    // replace('“', '"')
 
     public TumblrSuccessResponse() { }
 
