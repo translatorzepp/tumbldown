@@ -14,7 +14,9 @@ import io.dropwizard.views.ViewBundle;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.MediaType;
 
+import java.util.Map;
 import java.util.logging.Logger;
+
 import org.glassfish.jersey.logging.LoggingFeature;
 
 import zpalmer.tumbldown.client.Tumblr;
@@ -34,7 +36,12 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
     @Override
     public void initialize(final Bootstrap<tumbldownConfiguration> bootstrap) {
         // In the constructor of your Application you can add Bundles and Commands to your application.
-        bootstrap.addBundle(new ViewBundle<tumbldownConfiguration>());
+        bootstrap.addBundle(new ViewBundle<tumbldownConfiguration>(){
+            @Override
+            public Map<String, Map<String, String>> getViewConfiguration(tumbldownConfiguration configuration) {
+                return configuration.getViewRendererConfiguration();
+            }
+        });
         bootstrap.addBundle(new AssetsBundle());
     }
 
