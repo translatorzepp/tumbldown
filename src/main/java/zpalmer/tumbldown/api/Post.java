@@ -42,8 +42,8 @@ public class Post {
 
     @JsonProperty
     public Long getId() { return id; }
-    public String getSummary() { return summary.replace('“', '"'); }
-    // TODO: fix this ^ shitty workaround with a real conversion in the ObjectMapper in TumblrSuccessResponse
+    public String getSummary() { return summary; }
+
     public ArrayList<String> getTags() { return tags; }
     public String getType() { return type; }
 
