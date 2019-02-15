@@ -65,14 +65,16 @@ public class PostsResource {
                         }
                     });
                 }
-                try {
-                    output.close();
-                } catch (IOException e) {
-                }
             } catch (WebApplicationException e) {
                 try {
                     output.write(new ErrorView(new ErrorMessage(e.getMessage())));
                 } catch (IOException ioe) {
+                }
+            }
+            finally {
+                try {
+                    output.close();
+                } catch (IOException e) {
                 }
             }
         }).start();
