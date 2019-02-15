@@ -16,6 +16,7 @@ public class Post {
     private Long id;
     private Long likedAt;
     private String likedFromBlogName;
+    private String slug;
     private String summary;
     private ArrayList<String> tags;
     private String type;
