@@ -2,12 +2,11 @@ package zpalmer.tumbldown.resources;
 
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.jersey.validation.ValidationErrorMessage;
-import io.dropwizard.views.View;
 
 import java.util.List;
 
 
-public class ErrorView extends View {
+public class ErrorView extends ResponseUnitView {
     private final ErrorMessage error;
     private final List<String> validationErrors;
 

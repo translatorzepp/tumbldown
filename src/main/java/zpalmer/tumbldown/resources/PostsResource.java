@@ -7,6 +7,7 @@ import java.util.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import io.dropwizard.jersey.errors.ErrorMessage;
 import org.glassfish.jersey.server.ChunkedOutput;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -27,10 +28,10 @@ public class PostsResource {
 
     @GET
     @Timed
-    public ChunkedOutput<SinglePostView> getLikes(@QueryParam("blogName") @NotEmpty String blogName,
-                                        @QueryParam("searchText") String searchText,
-                                        @QueryParam("before") Long beforeTimestampSeconds
-    ) {
+    public ChunkedOutput<ResponseUnitView> searchLikes(@QueryParam("blogName") @NotEmpty String blogName,
+                                                       @QueryParam("searchText") String searchText,
+                                                       @QueryParam("before") Long beforeTimestampSeconds
+    ) throws WebApplicationException {
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
 
         final Long initialLikedBeforeTimestampSeconds;
@@ -41,45 +42,37 @@ public class PostsResource {
         }
         final Long likedAfterTimestampSeconds = initialLikedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
 
-        ChunkedOutput<SinglePostView> output = new ChunkedOutput<SinglePostView>(SinglePostView.class);
+        ChunkedOutput<ResponseUnitView> output = new ChunkedOutput<>(ResponseUnitView.class);
 
         new Thread(() -> {
+            LinkedList<Post> posts;
+            Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
             try {
-                LinkedList<Post> posts;
-                Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
+                while ((likedBeforeTimestampSeconds >= likedAfterTimestampSeconds) &&
+                        (!(posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)).isEmpty())) {
 
-                try {
-                    while ((likedBeforeTimestampSeconds >= likedAfterTimestampSeconds) &&
-                            (!(posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)).isEmpty())) {
+                    likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
 
-                        likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
-
-                        if (!searchText.isEmpty()) {
-                            filterPostsBySearchString(posts, searchText).forEach(post -> {
-                                try {
-                                    output.write(new SinglePostView(post));
-                                } catch (IOException e) {
-                                    // TODO: exceptions need to go somewhere! close output with error?
-                                }
-                            });
-                        } else {
-                            posts.forEach(post -> {
-                                try {
-                                    output.write(new SinglePostView(post));
-                                } catch (IOException e) {
-                                    // TODO: exceptions need to go somewhere! close output with error?
-                                }
-                            });
-                        }
+                    if (!searchText.isEmpty()) {
+                        posts = filterPostsBySearchString(posts, searchText);
                     }
-                } catch (WebApplicationException e) {
-                    // TODO: exceptions need to go somewhere! close output with error?
+
+                    posts.forEach(post -> {
+                        try {
+                            output.write(new SinglePostView(post));
+                        } catch (IOException e) {
+                            // TODO: exceptions need to go somewhere! close output with error?
+                        }
+                    });
                 }
-            } finally {
                 try {
                     output.close();
                 } catch (IOException e) {
-                    throw new WebApplicationException("Unknown error.");
+                }
+            } catch (WebApplicationException e) {
+                try {
+                    output.write(new ErrorView(new ErrorMessage(e.getMessage())));
+                } catch (IOException ioe) {
                 }
             }
         }).start();
@@ -87,12 +80,18 @@ public class PostsResource {
         return output;
     }
 
-    private LinkedList<Post> getLikesBefore(String blogName, Long likedBeforeTimestampSeconds) {
+    protected LinkedList<Post> getLikesBefore(String blogName, Long likedBeforeTimestampSeconds)
+            throws WebApplicationException {
         TumblrResponse response = tumblrClient.getLikes(blogName, likedBeforeTimestampSeconds);
 
         if (response instanceof TumblrSuccessResponse) {
             TumblrSuccessResponse success = (TumblrSuccessResponse) response;
-            return new LinkedList<Post>(success.getPosts());
+
+            if (!(success.getPosts() == null)) {
+                return new LinkedList<>(success.getPosts());
+            } else {
+                return new LinkedList<>();
+            }
         } else {
             int tumblrErrorStatusCode = response.getMeta().getStatus();
             String errorDetails;

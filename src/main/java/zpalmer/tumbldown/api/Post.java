@@ -23,11 +23,6 @@ public class Post {
 
     public Post() { }
 
-    public Post(Long id, String summary) {
-        this.id = id;
-        this.summary = summary;
-    }
-
     public Post(Long id, String summary, ArrayList<String> tags) {
         this.id = id;
         this.summary = summary;

@@ -5,96 +5,78 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 import java.util.*;
+import javax.ws.rs.WebApplicationException;
+
 import org.junit.Test;
+
 import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponseMeta;
+import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
-
-import javax.ws.rs.WebApplicationException;
 
 
 public class PostsResourceTest {
-    private static PostsResource POSTS_RESOURCE = new PostsResource(mock(Tumblr.class));
+    private Tumblr fakeTumblr = mock(Tumblr.class);
 
-    private static String searchString = "gay";
-    private static Post postWithSearchStringFirst = new Post(12345L, "I feel pretty and witty and gay");
-    private static Post postWithoutSearchStringFirst = new Post(35813L, "I feel pretty and witty and bright");
-    private static Post postWithoutSearchStringSecond = new Post(8132134L, "and I pity any girl who isn't me to{day|night}");
-
+    private static Post postWithSearchStringInSummary = new Post(12345L, "I feel pretty and witty and gay", new ArrayList<>());
+    private static Post postWithoutSearchString = new Post(35813L, "I feel pretty and witty and bright", new ArrayList<>());
     private static Post postWithSearchStringInTag = new Post(11235L, "I love my wife!",
             new ArrayList<>(Collections.singletonList("gay")));
 
-    @Test
-    public void selectPostsWithSearchTermInSummary() {
-        LinkedList<Post> originalPostCollection = new LinkedList<>();
-        originalPostCollection.add(0, postWithoutSearchStringFirst);
-        originalPostCollection.add(1, postWithSearchStringFirst);
-        originalPostCollection.add(2, postWithoutSearchStringSecond);
+    private LinkedList<Post> posts = new LinkedList<>();
 
-        Post postWithSearchString = originalPostCollection.get(1);
-        Post postWithoutSearchStringFirst = originalPostCollection.get(0);
-        Post postWithoutSearchStringSecond = originalPostCollection.get(2);
-
-        Collection<Post> searchResults = POSTS_RESOURCE
-                .filterPostsBySearchString(originalPostCollection, searchString);
-
-        assertThat(searchResults).contains(postWithSearchString);
-        assertThat(searchResults).doesNotContain(postWithoutSearchStringFirst);
-        assertThat(searchResults).doesNotContain(postWithoutSearchStringSecond);
-    }
 
     @Test
-    public void selectsPostsWithSearchTermInSummary() {
-        LinkedList<Post> originalPostCollection = new LinkedList<>();
-        originalPostCollection.add(0, postWithSearchStringInTag);
-        originalPostCollection.add(1, postWithoutSearchStringSecond);
+    public void selectOnlyPostsWithSearchTerm() {
+        posts.add(postWithSearchStringInSummary);
+        posts.add(postWithoutSearchString);
+        posts.add(postWithSearchStringInTag);
 
-        Post postWithSearchStringInTag = originalPostCollection.get(0);
-        Post postWithoutSearchString = originalPostCollection.get(1);
-
-        Collection<Post> searchResults = POSTS_RESOURCE
-                .filterPostsBySearchString(originalPostCollection, searchString);
+        Collection<Post> searchResults = new PostsResource(mock(Tumblr.class))
+                .filterPostsBySearchString(posts, "gay");
 
         assertThat(searchResults).contains(postWithSearchStringInTag);
         assertThat(searchResults).doesNotContain(postWithoutSearchString);
+        assertThat(searchResults).contains(postWithSearchStringInTag);
     }
 
     @Test
-    public void removeIfRemoves() {
-        LinkedList<Post> originalPostCollection = new LinkedList<>();
-        originalPostCollection.add(postWithoutSearchStringFirst);
-        originalPostCollection.add(postWithSearchStringFirst);
-
-        boolean resultOfFilter = originalPostCollection.removeIf(post -> post.containsText(searchString));
-
-        assertThat(resultOfFilter).isTrue();
+    public void closesOutputOnResults() {
+        when(fakeTumblr.getLikes("blog-for-all", 1L)).thenReturn(
+                new TumblrSuccessResponse()
+        );
+        PostsResource goodPostsResource = new PostsResource(fakeTumblr);
+        assertThat(goodPostsResource.searchLikes("blog-for-all", "", 1L).isClosed());
     }
 
-// TODO: rethink error handling and come up with new appropriate tests
-//    @Test
-//    public void returnsErrors() {
-//        Tumblr failTumblr = mock(Tumblr.class);
-//        when(failTumblr.getLikes("secret-blog", 1L)).thenReturn(new TumblrFailureResponse(
-//                new TumblrResponseMeta("Forbidden", 403)
-//        ));
-//        PostsResource failPostResource = new PostsResource(failTumblr);
-//
-//        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
-//            failPostResource.getLikes("secret-blog", "test", 1L);
-//        }).withMessageContaining("secret-blog's likes are not public.");
-//    }
-//
-//    @Test
-//    public void returnsUnexpectedErrors() {
-//        Tumblr failTumblr = mock(Tumblr.class);
-//        when(failTumblr.getLikes("unsecret-blog", 1L)).thenReturn(new TumblrFailureResponse(
-//                new TumblrResponseMeta(":dull_surprise: tumblr is down.", 503)
-//        ));
-//        PostsResource failPostResource = new PostsResource(failTumblr);
-//
-//        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
-//            failPostResource.getLikes("unsecret-blog", "test", 1L);
-//        }).withMessageContaining("Tumblr is down or unreachable.");
-//    }
+    @Test
+    public void closesOutputOnErrors() {
+        when(fakeTumblr.getLikes("secret-blog", 1L)).thenReturn(
+                new TumblrFailureResponse(new TumblrResponseMeta("Forbidden", 403)));
+        PostsResource failPostsResource = new PostsResource(fakeTumblr);
+        assertThat(failPostsResource.searchLikes("secret-blog", "", 1L).isClosed());
+    }
+
+    @Test
+    public void translatesExpectedErrors() {
+        when(fakeTumblr.getLikes("secret-blog", 1L)).thenReturn(
+                new TumblrFailureResponse(new TumblrResponseMeta("Forbidden", 403)));
+        PostsResource failPostsResource = new PostsResource(fakeTumblr);
+
+        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
+            failPostsResource.getLikesBefore("secret-blog",1L);
+        }).withMessageContaining("secret-blog's likes are not public.");
+    }
+
+    @Test
+    public void translatesUnexpectedErrors() {
+        when(fakeTumblr.getLikes("secret-blog", 1L)).thenReturn(
+                new TumblrFailureResponse(new TumblrResponseMeta("???", 422)));
+        PostsResource failPostsResource = new PostsResource(fakeTumblr);
+
+        assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
+            failPostsResource.getLikesBefore("secret-blog",1L);
+        }).withMessageContaining("Unknown error: 422.");
+    }
 }
