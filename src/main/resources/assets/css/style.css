@@ -1,14 +1,13 @@
 body {
-  background: #36465d; /* tumblr blue */
   font-family: sans-serif;
-  color: white;
 }
 
-a:link {
-  color: white;
+h1 {
+    color: #36465d; /* tumblr blue */
 }
-a:visited {
-  color: lightgrey;
+
+.posts, {
+  letter-spacing: 0.05em;
 }
 
 /* --- Search spinner --- */
@@ -17,7 +16,7 @@ a:visited {
   width: 30px;
   height: 30px;
   margin: 10px auto;
-  background-color: #f0f8ff;
+  background-color: #36465d; /* use #f0f8ff if tumblr blue is background */
 
   float: left;
 
