@@ -9,11 +9,24 @@
         <h3>Search</h3>
 
         <div id="searchForm">
+            <label for="blogName">The blog whose likes you want to search</label>
+            <br />
             <input type="text" id="blogName" name="blogName" placeholder="tumbldown-app" required></input>
+
+            <br /><br />
+            <label for="searchText"><small>(optional)</small> What to search for, in tags and summary</label>
+            <br />
             <input type="search" id="searchText" name="searchText" placeholder="thing to search for"></input>
+
+            <br /><br />
+            <label for="before"><small>(optional)</small> Search before this date</label>
+            <br />
             <input type="date" id="before" name="before"></input>
+
+            <br /><br />
             <button onclick="search()">Search</button>
         </div>
+
         <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
         <br/><br/><br/>
 
