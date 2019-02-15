@@ -1,5 +1,6 @@
 package zpalmer.tumbldown.client;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -8,7 +9,10 @@ import javax.ws.rs.core.Response;
 
 import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
+import zpalmer.tumbldown.api.tumblr.TumblrResponseMeta;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
+
+import java.net.SocketTimeoutException;
 
 public class Tumblr {
     private static final String BASE_API_URL = "https://api.tumblr.com/v2";
@@ -44,17 +48,21 @@ public class Tumblr {
 
     private TumblrResponse makeRequestAndRespondToSuccessOrFailure(Invocation.Builder invocationBuilder) {
         // TODO: do we need to handle exceptions thrown here?
-        Response response = invocationBuilder.get();
+        try {
+            Response response = invocationBuilder.get();
 
-        if (response.getStatus() == 200) {
-            return response.readEntity(TumblrSuccessResponse.class);
-        } else {
-            System.out.println(response.getHeaders().toString());
+            if (response.getStatus() == 200) {
+                return response.readEntity(TumblrSuccessResponse.class);
+            } else {
+                System.out.println(response.getHeaders().toString());
 
-            TumblrFailureResponse failResponse = response.readEntity(TumblrFailureResponse.class);
-            System.out.println(failResponse.getMeta().getMessage());
+                TumblrFailureResponse failResponse = response.readEntity(TumblrFailureResponse.class);
+                System.out.println(failResponse.getMeta().getMessage());
 
-            return failResponse;
+                return failResponse;
+            }
+        } catch (ProcessingException e) {
+            return new TumblrFailureResponse(new TumblrResponseMeta("Unable to complete request to tumblr", 504));
         }
     }
 
