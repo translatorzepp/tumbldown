@@ -9,6 +9,7 @@ function hideSearchSpinner() {
 function search() {
     var blogName = document.getElementById("blogName").value;
     var searchText = document.getElementById("searchText").value;
+    var before = document.getElementById("before").value;
 
     if (validateSearchInput(blogName, searchText)) {
 
@@ -17,7 +18,7 @@ function search() {
 
         // TODO: error handling
         var request = new XMLHttpRequest();
-        var searchEndpoint = "/likes?blogName=" + blogName + "&searchText=" + searchText;
+        var searchEndpoint = "/likes?blogName=" + blogName + "&searchText=" + searchText + "&before=" + before;
 
         request.open("GET", searchEndpoint, true);
         request.onprogress = function () {

@@ -11,6 +11,9 @@ public class SearchResource {
 
     @GET
     public SearchView displaySearchForm() {
+        // if we have a query string, create a SearchCriteria and pass that into the SearchView
+        // otherwise, just a new SearchView
+
         return new SearchView();
     }
 }

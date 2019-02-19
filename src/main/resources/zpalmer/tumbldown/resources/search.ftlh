@@ -8,6 +8,9 @@
         <h1>tumbldown</h1>
         <h3>Search</h3>
 
+         <!-- TO DO: convert this into a form that sends a GET to /search -->
+         <!-- TO DO: pass in an object that holds search criteria; if it exists, trigger the search -->
+
         <div id="searchForm">
             <label for="blogName">The blog whose likes you want to search</label>
             <br />
