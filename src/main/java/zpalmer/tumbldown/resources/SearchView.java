@@ -15,4 +15,8 @@ public class SearchView extends View {
         super("search.ftlh");
         this.searchCriteria = searchCriteria;
     }
+
+    public SearchCriteria getSearchCriteria() {
+        return searchCriteria;
+    }
 }

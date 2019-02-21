@@ -6,19 +6,20 @@ function hideSearchSpinner() {
     document.getElementById("searchingSpinner").setAttribute("hidden", "hidden");
 }
 
-function search() {
-    var blogName = document.getElementById("blogName").value;
-    var searchText = document.getElementById("searchText").value;
-    var before = document.getElementById("before").value;
-
+function search(blogName, searchText, before) {
     if (validateSearchInput(blogName, searchText)) {
-
         document.getElementById('searchResults').innerHTML = null;
         document.getElementById('errorMessage').innerHTML = null;
 
         // TODO: error handling
         var request = new XMLHttpRequest();
-        var searchEndpoint = "/likes?blogName=" + blogName + "&searchText=" + searchText + "&before=" + before;
+        var searchEndpoint = "/likes?blogName=" + blogName;
+        if (searchText != null) {
+            searchEndpoint += ("&searchText=" + searchText);
+        }
+        if (before != null) {
+            searchEndpoint += ("&before=" + before);
+        }
 
         request.open("GET", searchEndpoint, true);
         request.onprogress = function () {

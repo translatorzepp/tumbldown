@@ -13,6 +13,18 @@ public class SearchCriteria {
         this.beforeTimestampSeconds = beforeTimestampSeconds;
     }
 
+    public String getBlogName() {
+        return blogName;
+    }
+
+    public String getSearchText() {
+        return searchText.orElse(null);
+    }
+
+    public Long getBeforeTimestampSeconds(){
+        return beforeTimestampSeconds.orElse(0L);
+    }
+
 //    class SearchCriteriaBuilder {
 //        String blogName;
 //        String searchText;
