@@ -35,7 +35,7 @@ public class Tumblr {
         return makeRequestAndRespondToSuccessOrFailure(invocationBuilder);
     }
 
-    public TumblrResponse getLikes(String blogName, long beforeTime) {
+    public TumblrResponse getLikes(String blogName, Long beforeTime) {
         //api.tumblr.com/v2/blog/{blog-identifier}/likes?api_key={key}
         WebTarget likesTarget = target("blog/" + blogName + ".tumblr.com/" + "likes")
                 .queryParam("limit", TUMBLR_LIMIT)

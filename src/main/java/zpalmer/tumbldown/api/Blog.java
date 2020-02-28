@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Blog {
     private String name;
-    private int numberOfLikes;
+    private Long numberOfLikes;
 
     public Blog() { }
 
-    public Blog(String name, int numberOfLikes) {
+    public Blog(String name, Long numberOfLikes) {
         this.name = name;
         this.numberOfLikes = numberOfLikes;
     }
@@ -20,7 +20,7 @@ public class Blog {
     public String getName() { return name; }
 
     @JsonProperty("likes")
-    public long getNumberOfLikes() { return numberOfLikes; }
+    public Long getNumberOfLikes() { return numberOfLikes; }
 
     public static String sanitizeBlogName(String name) {
         return name.replace(".tumblr.com", "").trim();
