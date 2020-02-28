@@ -5,7 +5,7 @@ import zpalmer.tumbldown.api.Post;
 import java.nio.charset.Charset;
 
 
-public class SinglePostView extends ResponseUnitView{
+public class SinglePostView extends ResponseUnitView {
     private final Post post;
 
     public SinglePostView(Post post) {

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 import javax.ws.rs.WebApplicationException;
 
@@ -26,6 +27,28 @@ public class PostsResourceTest {
 
     private LinkedList<Post> posts = new LinkedList<>();
 
+    @Test
+    public void convertsStringDatesToEpoch() {
+        Long expectedUtc = 1580601599L;
+        Long actualUtc = PostsResource.convertDateStringToEpochTime("2020-02-01", "Africa/Abidjan");
+        assertThat(actualUtc).isEqualTo(expectedUtc);
+
+        Long expectedAltTimezone = 1577944799L;
+        Long actualAltTimezone = PostsResource.convertDateStringToEpochTime("2020-01-01", "America/Chicago");
+        assertThat(actualAltTimezone).isEqualTo(expectedAltTimezone);
+
+        Long expectedAltTimezoneDaylightSavingsChange = 1601787599L;
+        Long actualAltTimezoneDaylightSavingsChange = PostsResource.convertDateStringToEpochTime("2020-10-03", "America/Chicago");
+        assertThat(expectedAltTimezoneDaylightSavingsChange).isEqualTo(actualAltTimezoneDaylightSavingsChange);
+
+        Long expectedNoTimezone = 1577944799L;
+        Long actualNoTimezone = PostsResource.convertDateStringToEpochTime("2020-01-01", "");
+        assertThat(actualNoTimezone).isEqualTo(expectedNoTimezone);
+
+        Long expectedNullInput = ZonedDateTime.now().toEpochSecond();
+        Long actualNullInput = PostsResource.convertDateStringToEpochTime(null, null);
+        assertThat(actualNullInput).isEqualTo(expectedNullInput);
+    }
 
     @Test
     public void selectOnlyPostsWithSearchTerm() {
@@ -43,19 +66,23 @@ public class PostsResourceTest {
 
     @Test
     public void closesOutputOnResults() {
-        when(fakeTumblr.getLikes("blog-for-all", 1L)).thenReturn(
+        when(fakeTumblr.getLikes(eq("blog-for-all"), anyLong())).thenReturn(
                 new TumblrSuccessResponse()
         );
         PostsResource goodPostsResource = new PostsResource(fakeTumblr);
-        assertThat(goodPostsResource.searchLikes("blog-for-all", "", 1L).isClosed());
+        assertThat(
+                goodPostsResource.searchLikes("blog-for-all", "", "", "").isClosed()
+        ).isTrue();
     }
 
     @Test
     public void closesOutputOnErrors() {
-        when(fakeTumblr.getLikes("secret-blog", 1L)).thenReturn(
+        when(fakeTumblr.getLikes(eq("secret-blog"), anyLong())).thenReturn(
                 new TumblrFailureResponse(new TumblrResponseMeta("Forbidden", 403)));
         PostsResource failPostsResource = new PostsResource(fakeTumblr);
-        assertThat(failPostsResource.searchLikes("secret-blog", "", 1L).isClosed());
+        assertThat(
+                failPostsResource.searchLikes("secret-blog", "", "", "").isClosed()
+        ).isTrue();
     }
 
     @Test

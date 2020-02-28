@@ -1,4 +1,4 @@
-<#-- @ftlvariable type="zpalmer.tumbldown.core.SearchCriteria" -->
+<#-- @ftlvariable name="" type="zpalmer.tumbldown.core.SearchView" -->
 <!-- TO DO: add a character encoding somewhere or other to prevent getting "The character encoding of the HTML document was not declared" console errors in firefox -->
 <html lang="en">
     <head>
@@ -40,7 +40,5 @@
         <div class="posts" id="searchResults"></div>
     </body>
 
-    <#if searchCriteria??>
-    <script>search("${searchCriteria.blogName}", "${searchCriteria.searchText}", ${searchCriteria.beforeTimestampSeconds})</script>
-    </#if>
+    <script>search("${searchCriteria.blogName}", "${searchCriteria.searchText}", "${searchCriteria.beforeDate}")</script>
 </html>

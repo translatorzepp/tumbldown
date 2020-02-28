@@ -6,7 +6,7 @@ function hideSearchSpinner() {
     document.getElementById("searchingSpinner").setAttribute("hidden", "hidden");
 }
 
-function search(blogName, searchText, before) {
+function search(blogName, searchText, beforeDate) {
     if (validateSearchInput(blogName, searchText)) {
         document.getElementById('searchResults').innerHTML = null;
         document.getElementById('errorMessage').innerHTML = null;
@@ -18,7 +18,7 @@ function search(blogName, searchText, before) {
             searchEndpoint += ("&searchText=" + searchText);
         }
         if (before != null) {
-            searchEndpoint += ("&before=" + before);
+            searchEndpoint += ("&before=" + before + "&beforeTimezone=" + Intl.DateTimeFormat().resolvedOptions().timeZone);
         }
 
         request.open("GET", searchEndpoint, true);

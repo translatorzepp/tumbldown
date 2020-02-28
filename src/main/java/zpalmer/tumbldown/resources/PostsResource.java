@@ -3,6 +3,10 @@ package zpalmer.tumbldown.resources;
 import com.codahale.metrics.annotation.Timed;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +26,7 @@ import zpalmer.tumbldown.client.Tumblr;
 @Produces(MediaType.TEXT_HTML)
 public class PostsResource {
     private Tumblr tumblrClient;
-    private Long MAX_TIME_DELTA_SECONDS = 14 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out
+    private Long MAX_TIME_DELTA_SECONDS = 10 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out
 
     public PostsResource(Tumblr client) { this.tumblrClient = client; }
 
@@ -30,16 +34,12 @@ public class PostsResource {
     @Timed
     public ChunkedOutput<ResponseUnitView> searchLikes(@QueryParam("blogName") @NotEmpty String blogName,
                                                        @QueryParam("searchText") String searchText,
-                                                       @QueryParam("before") Long beforeTimestampSeconds
+                                                       @QueryParam("before") String beforeDate,
+                                                       @QueryParam("beforeTimezone") String beforeTimezone
     ) throws WebApplicationException {
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
 
-        final Long initialLikedBeforeTimestampSeconds;
-        if (beforeTimestampSeconds == null) {
-            initialLikedBeforeTimestampSeconds = new Date().getTime() / 1000;
-        } else {
-            initialLikedBeforeTimestampSeconds = beforeTimestampSeconds;
-        }
+        final Long initialLikedBeforeTimestampSeconds = convertDateStringToEpochTime(beforeDate, beforeTimezone);
         final Long likedAfterTimestampSeconds = initialLikedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
 
         ChunkedOutput<ResponseUnitView> output = new ChunkedOutput<>(ResponseUnitView.class);
@@ -47,21 +47,22 @@ public class PostsResource {
         new Thread(() -> {
             LinkedList<Post> posts;
             Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
+            boolean applyTextFilter = !searchText.isEmpty();
             try {
                 while ((likedBeforeTimestampSeconds >= likedAfterTimestampSeconds) &&
                         (!(posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds)).isEmpty())) {
 
                     likedBeforeTimestampSeconds = posts.getLast().getLikedAt();
-
-                    if (!searchText.isEmpty()) {
-                        posts = filterPostsBySearchString(posts, searchText);
-                    }
+                    posts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds);
 
                     posts.forEach(post -> {
-                        try {
-                            output.write(new SinglePostView(post));
-                        } catch (IOException e) {
-                            // TODO: exceptions need to go somewhere! close output with error?
+                        if (applyTextFilter && post.containsText(searchText)) {
+                            try {
+
+                                output.write(new SinglePostView(post));
+                            } catch (IOException e) {
+                                // TODO: exceptions need to go somewhere! close output with error?
+                            }
                         }
                     });
                 }
@@ -82,7 +83,23 @@ public class PostsResource {
         return output;
     }
 
-    protected LinkedList<Post> getLikesBefore(String blogName, Long likedBeforeTimestampSeconds)
+    static Long convertDateStringToEpochTime(String date, String timezoneId) {
+        if (date == null || date.isEmpty()) {
+            return ZonedDateTime.now().toEpochSecond();
+        }
+
+        if (timezoneId == null || timezoneId.isEmpty() || timezoneId.equals("undefined")) {
+            timezoneId = "America/Chicago";
+        }
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDate.parse(date),
+                                                       LocalTime.of(23, 59, 59),
+                                                       ZoneId.of(timezoneId));
+
+        return zonedDateTime.toEpochSecond();
+    }
+
+    LinkedList<Post> getLikesBefore(String blogName, Long likedBeforeTimestampSeconds)
             throws WebApplicationException {
         TumblrResponse response = tumblrClient.getLikes(blogName, likedBeforeTimestampSeconds);
 

@@ -16,12 +16,13 @@ public class SearchResource {
     @GET
     public SearchView displaySearchForm(@QueryParam("blogName") Optional<String> blogName,
                                         @QueryParam("searchText") Optional<String> searchText,
-                                        @QueryParam("before") Optional<Long> beforeTimestampSeconds) {
+                                        @QueryParam("before") Optional<String> beforeDate
+    ) {
         return blogName.map(blogToSearch -> new SearchView(
                 new SearchCriteria(
                         blogToSearch,
                         searchText,
-                        beforeTimestampSeconds
+                        beforeDate
                 ))
         ).orElse(new SearchView());
     }

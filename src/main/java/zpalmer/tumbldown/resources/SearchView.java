@@ -5,7 +5,7 @@ import zpalmer.tumbldown.core.SearchCriteria;
 
 
 public class SearchView extends View {
-    private SearchCriteria searchCriteria;
+    public SearchCriteria searchCriteria;
 
     public SearchView() {
         super("search.ftlh");
