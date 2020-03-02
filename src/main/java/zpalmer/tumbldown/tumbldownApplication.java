@@ -61,7 +61,7 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
         final PostsResource postsResource = new PostsResource(tumblr);
         environment.jersey().register(postsResource);
 
-        final SearchResource searchResource = new SearchResource();
+        final SearchResource searchResource = new SearchResource(tumblr);
         environment.jersey().register(searchResource);
 
         environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {

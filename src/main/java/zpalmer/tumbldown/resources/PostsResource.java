@@ -3,10 +3,7 @@ package zpalmer.tumbldown.resources;
 import com.codahale.metrics.annotation.Timed;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -128,7 +125,9 @@ public class PostsResource {
     }
 
     protected LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, String searchText) {
-        posts.removeIf(post -> !post.containsText(searchText));
+        if (!(searchText == null || searchText.isEmpty())) {
+            posts.removeIf(post -> !post.containsText(searchText));
+        }
         return posts;
     }
 }

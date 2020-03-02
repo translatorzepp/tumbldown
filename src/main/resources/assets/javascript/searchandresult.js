@@ -1,50 +1,15 @@
-function showSearchSpinner() {
-    document.getElementById("searchingSpinner").removeAttribute("hidden");
-}
-
-function hideSearchSpinner() {
-    document.getElementById("searchingSpinner").setAttribute("hidden", "hidden");
-}
-
-function search(blogName, searchText, beforeDate) {
-    if (validateSearchInput(blogName, searchText)) {
-        document.getElementById('searchResults').innerHTML = null;
+function search() {
+    console.log("search called");
+    if (validateSearchInput(document.getElementById('blogName').value, document.getElementById('searchText').value)) {
         document.getElementById('errorMessage').innerHTML = null;
 
-        // TODO: error handling
-        var request = new XMLHttpRequest();
-        var searchEndpoint = "/likes?blogName=" + blogName;
-        if (searchText != null) {
-            searchEndpoint += ("&searchText=" + searchText);
-        }
-        if (before != null) {
-            searchEndpoint += ("&before=" + before + "&beforeTimezone=" + Intl.DateTimeFormat().resolvedOptions().timeZone);
-        }
+        var beforeTimestampSeconds = Math.round((new Date()).getTime() / 1000);
+        document.getElementById('beforeTimestamp').value = beforeTimestampSeconds;
+        console.log('before:')
+        console.log(document.getElementById('beforeTimestamp').value);
 
-        request.open("GET", searchEndpoint, true);
-        request.onprogress = function () {
-            console.log("*** onprogress fired ***");
-            document.getElementById('searchResults').innerHTML = request.responseText;
-        }
-        request.onload = function () {
-            document.getElementById('searchResults').innerHTML = request.responseText;
-            hideSearchSpinner();
-            if (request.status != 200) {
-                document.getElementById('errorMessage').innerHTML = request.errorMessage;
-            }
-        }
-        request.onerror = function () {
-            console.log(request.errorMessage);
-            document.getElementById('errorMessage').innerHTML = "Something went wrong!";
-            hideSearchSpinner();
-        }
-        request.onabort = function() {
-            hideSearchSpinner();
-        }
+        document.getElementById('searchForm').submit();
 
-        showSearchSpinner();
-
-        request.send();
     } else {
         alert("Specify the name of a blog to search!");
     }
@@ -56,4 +21,12 @@ function validateSearchInput(blog, text) {
     } else {
         return false;
     }
+}
+
+function showSearchSpinner() {
+    document.getElementById("searchingSpinner").removeAttribute("hidden");
+}
+
+function hideSearchSpinner() {
+    document.getElementById("searchingSpinner").setAttribute("hidden", "hidden");
 }

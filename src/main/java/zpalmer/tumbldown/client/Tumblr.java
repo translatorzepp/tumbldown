@@ -7,12 +7,14 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.logging.LoggingFeature;
 import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponseMeta;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 
-import java.net.SocketTimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Tumblr {
     private static final String BASE_API_URL = "https://api.tumblr.com/v2";
@@ -54,14 +56,16 @@ public class Tumblr {
             if (response.getStatus() == 200) {
                 return response.readEntity(TumblrSuccessResponse.class);
             } else {
-                System.out.println(response.getHeaders().toString());
+                Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).log(Level.WARNING, response.getHeaders().toString());
 
                 TumblrFailureResponse failResponse = response.readEntity(TumblrFailureResponse.class);
-                System.out.println(failResponse.getMeta().getMessage());
+                Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).log(Level.WARNING, failResponse.getMeta().getMessage());
+                Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).log(Level.WARNING, String.valueOf(failResponse.getMeta().getStatus()));
 
                 return failResponse;
             }
         } catch (ProcessingException e) {
+            Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).log(Level.WARNING, e.toString());
             return new TumblrFailureResponse(new TumblrResponseMeta("Unable to complete request to tumblr", 504));
         }
     }
