@@ -9,4 +9,6 @@
         <p>Your search terms were invalid.</p>
         <#list validationErrors as validationError><p>${validationError}</p></#list>
     </#if>
+
+    <a href="/search">Back to search</a>
 </div>

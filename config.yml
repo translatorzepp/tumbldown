@@ -1,5 +1,5 @@
 jerseyClient:
-  timeout: 1500ms
+  timeout: 45000ms
   connectionTimeout: 1500ms
   connectionRequestTimeout: 1500ms
   gzipEnabled: true

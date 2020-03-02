@@ -1,19 +1,17 @@
 <#-- @ftlvariable name="" type="zpalmer.tumbldown.core.SearchView" -->
-<!-- TO DO: add a character encoding somewhere or other to prevent getting "The character encoding of the HTML document was not declared" console errors in firefox -->
 <html lang="en">
     <head>
-        <link rel="stylesheet" type="text/css" href="assets/css/style.css"></link>
-        <script type="text/javascript" src="assets/javascript/searchandresult.js"></script>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
+        <script type="text/javascript" src="/assets/javascript/search.js"></script>
         <title>tumbldown: search tumblr</title>
     </head>
     <body>
         <h1>tumbldown</h1>
         <h3>Search</h3>
 
-         <!-- TO DO: pass in an object that holds search criteria; if it exists, trigger the search -->
-
         <div id="searchForm">
-            <form action="/search" method="get">
+            <form action="/search/likes" method="get">
                 <label for="blogName">The blog whose likes you want to search</label>
                 <br />
                 <input type="text" id="blogName" name="blogName" placeholder="tumbldown-app" required></input>
@@ -26,19 +24,17 @@
                 <br /><br />
                 <label for="before"><small>(optional)</small> Search before this date</label>
                 <br />
-                <input type="date" id="before" name="before"></input>
+                <input type="date" id="beforeDate"></input>
+
+                <input type="text" id="beforeTimestamp" name="beforeTimestamp" hidden></input>
 
                 <br /><br />
-                <button type="submit">Search</button>
+                <button onclick="search()">Search</button>
             </form>
         </div>
 
         <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
-        <br/><br/><br/>
 
         <div class="error" id="errorMessage"></div>
-        <div class="posts" id="searchResults"></div>
     </body>
-
-    <script>search("${searchCriteria.blogName}", "${searchCriteria.searchText}", "${searchCriteria.beforeDate}")</script>
 </html>

@@ -1,16 +1,16 @@
 package zpalmer.tumbldown.core;
 
-import java.util.Optional;
-
 public class SearchCriteria {
     private String blogName;
-    private Optional<String> searchText;
-    private Optional<String> beforeDate;
+    private String searchText;
+    private String nextBeforeTimestampSeconds;
+    private String currentBeforeTimestampSeconds;
 
-    public SearchCriteria(String blogName, Optional<String> searchText, Optional<String> beforeDate) {
+    public SearchCriteria(String blogName, String searchText, Long nextBeforeTimestampSeconds, Long currentBeforeTimestampSeconds) {
         this.blogName = blogName;
         this.searchText = searchText;
-        this.beforeDate = beforeDate;
+        this.nextBeforeTimestampSeconds = convertToStringWithNull(nextBeforeTimestampSeconds);
+        this.currentBeforeTimestampSeconds = convertToStringWithNull(currentBeforeTimestampSeconds);
     }
 
     public String getBlogName() {
@@ -18,10 +18,19 @@ public class SearchCriteria {
     }
 
     public String getSearchText() {
-        return searchText.orElse(null);
+        return searchText;
     }
 
-    public String getBeforeDate() {
-        return beforeDate.orElse(null);
+    public String getNextBeforeTimestampSeconds() { return nextBeforeTimestampSeconds; }
+
+    public String getCurrentBeforeTimestampSeconds() {
+        return currentBeforeTimestampSeconds;
+    }
+
+    private String convertToStringWithNull(Long timestamp) {
+        if (timestamp != null) {
+            return String.valueOf(timestamp);
+        }
+        return null;
     }
 }
