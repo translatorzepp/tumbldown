@@ -22,7 +22,7 @@ import java.util.LinkedList;
 @Produces(MediaType.TEXT_HTML)
 public class SearchResource {
     private Tumblr tumblrClient;
-    private Long MAX_TIME_DELTA_SECONDS = 10 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out
+    private Long MAX_TIME_DELTA_SECONDS = 30 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out
     private int POSTS_PER_PAGE = 10;
 
     public SearchResource(Tumblr client) { this.tumblrClient = client; }
@@ -41,35 +41,42 @@ public class SearchResource {
     ) throws WebApplicationException {
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
 
-        Long likedBeforeTimestampSeconds = getTimestampFromParams(null, null, beforeTimestamp);
+        Long initialLikedBeforeTimestampSeconds = getTimestampFromParams(null, null, beforeTimestamp);
+        Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
         Long maxLikedBefore = likedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
 
         LinkedList<Post> resultsPage = new LinkedList<>(Collections.emptyList());
-        Boolean moreResults = true;
         int additionalPostsNeeded = POSTS_PER_PAGE;
 
-        while ((additionalPostsNeeded > 0) && moreResults && likedBeforeTimestampSeconds > maxLikedBefore) {
+        while ((additionalPostsNeeded > 0) && (likedBeforeTimestampSeconds != null) && likedBeforeTimestampSeconds > maxLikedBefore) {
 
             LinkedList<Post> likedPosts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds);
 
             if (likedPosts.size() == 0) {
-                moreResults = false;
+                likedBeforeTimestampSeconds = null;
+
             } else {
                 LinkedList<Post> matchingPosts = filterPostsBySearchString(likedPosts, searchText);
 
+                Boolean moreMatchingPostsThanNeededForPage = matchingPosts.size() > additionalPostsNeeded;
+                Boolean returningAllMatchingPostsFromLikedPosts =
+                        matchingPosts.size() < likedPosts.size() &&
+                                matchingPosts.size() <= additionalPostsNeeded;
+
+
                 if (matchingPosts.size() > additionalPostsNeeded) {
-                    resultsPage.addAll(matchingPosts.subList(0, additionalPostsNeeded-1));
+                    resultsPage.addAll(matchingPosts.subList(0, additionalPostsNeeded));
+                    likedBeforeTimestampSeconds = resultsPage.getLast().getLikedAt();
                 } else {
                     resultsPage.addAll(matchingPosts);
+                    likedBeforeTimestampSeconds = likedPosts.getLast().getLikedAt();
                 }
-                additionalPostsNeeded = POSTS_PER_PAGE - resultsPage.size();
-
-                likedBeforeTimestampSeconds = likedPosts.getLast().getLikedAt();
             }
+            additionalPostsNeeded = POSTS_PER_PAGE - resultsPage.size();
         }
 
         return new LikesResultPageView(resultsPage,
-                new SearchCriteria(blogName, searchText, likedBeforeTimestampSeconds));
+                new SearchCriteria(blogName, searchText, likedBeforeTimestampSeconds, initialLikedBeforeTimestampSeconds));
     }
 
     static Long getTimestampFromParams(String date, String timezoneId, String timestampSeconds) {
@@ -77,7 +84,7 @@ public class SearchResource {
             return convertDateStringToEpochTime(date, timezoneId);
         }
 
-        return Long.valueOf(timestampSeconds);
+        return Long.valueOf(timestampSeconds.replaceAll("\\D", ""));
     }
 
     static Long getTimestampFromParams(String date, String timezoneId, Long timestampSeconds) {
@@ -136,7 +143,10 @@ public class SearchResource {
         LinkedList<Post> matchingPosts = new LinkedList<>();
         matchingPosts.addAll(posts);
 
-        matchingPosts.removeIf(post -> !post.containsText(searchText));
+        if (searchText != null && !searchText.isEmpty()) {
+            matchingPosts.removeIf(post -> !post.containsText(searchText));
+        }
+
         return matchingPosts;
     }
 }

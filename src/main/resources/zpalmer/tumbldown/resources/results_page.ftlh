@@ -1,17 +1,29 @@
 <#-- @ftlvariable name="" type="zpalmer.tumbldown.core.LikesResultPageView" -->
-<!-- TO DO: add a character encoding somewhere or other to prevent getting "The character encoding of the HTML document was not declared" console errors in firefox -->
 <html lang="en">
     <head>
-        <link rel="stylesheet" type="text/css" href="assets/css/style.css"></link>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
+        <script type="text/javascript" src="/assets/javascript/results.js"></script>
         <title>tumbldown: searching likes</title>
     </head>
-    <body>
+    <body onload="displayDatesFromCriteria()">
         <h1>tumbldown</h1>
-        <h3>Searching for posts liked by ${criteria.blogName}
-            <#if criteria.searchText?has_content> containing ${criteria.searchText}</#if>
-        </h3>
+        <div id="search_criteria">
+            Searching for posts liked by <em>${criteria.blogName}</em>
+            <#if criteria.searchText?has_content><span> containing <em>${criteria.searchText}</em></span></#if>
+            <#if criteria.currentBeforeTimestampSeconds?has_content>
+                <span> between
+                <em>
+                    <span id="search_criteria_after" timestamp=${criteria.nextBeforeTimestampSeconds}></span>
+                </em> and <em>
+                    <span id="search_criteria_before" timestamp=${criteria.currentBeforeTimestampSeconds}></span>
+                </em>
+                </span>
+            </#if>
+        </div>
 
-        <div class="posts" id="searchResults">
+        <br/><br/>
+        <div class="posts" id="search_results">
         <#list posts as post>
 
             <div class="post">
@@ -34,19 +46,32 @@
             </div>
             <br/>
 
+        <#else>
+        No posts found in this interval.
+        <br/>
         </#list>
         </div>
 
         <div id="next_button_div">
-        <form action="/search/likes" method="get">
-            <input type="text" id="blogName" name="blogName" value=${criteria.blogName} required hidden></input>
-            <input type="search" id="searchText" name="searchText" value="${criteria.searchText}" hidden></input>
-            <input type="text" id="beforeTimestamp" name="beforeTimestamp" value="${criteria.nextBeforeTimestampSeconds}" hidden></input>
-            <button type="submit">Next Page</button>
+            <form id="next_button_form" action="/search/likes" method="get">
+                <input hidden type="text" id="blogName" name="blogName" value=${criteria.blogName}></input>
+                <input hidden type="search" id="searchText" name="searchText" value="${criteria.searchText}"></input>
+                <input hidden type="text" id="beforeTimestamp" name="beforeTimestamp" value=${criteria.nextBeforeTimestampSeconds!""}></input>
+
+                <button <#if criteria.nextBeforeTimestampSeconds??><#else>disabled</#if> onclick="nextPage()">Next Page</button>
             </form>
-            <!-- <button id="next_button" onclick="search()">Next Page</button> -->
         </div>
 
+        <#if criteria.nextBeforeTimestampSeconds??>
+        <#else>
+        <br />
+        No more likes found.
+        </#if>
+        <br/> <br/>
+
         <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
+
+        <br/> <br/>
+        <a href="/search">New search?</a>
     </body>
 </html>

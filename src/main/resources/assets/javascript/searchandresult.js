@@ -1,18 +1,24 @@
 function search() {
-    console.log("search called");
+    showSearchSpinner();
     if (validateSearchInput(document.getElementById('blogName').value, document.getElementById('searchText').value)) {
         document.getElementById('errorMessage').innerHTML = null;
 
         var beforeTimestampSeconds = Math.round((new Date()).getTime() / 1000);
         document.getElementById('beforeTimestamp').value = beforeTimestampSeconds;
-        console.log('before:')
-        console.log(document.getElementById('beforeTimestamp').value);
 
-        document.getElementById('searchForm').submit();
+        document.getElementById('searchForm').submit;
 
     } else {
         alert("Specify the name of a blog to search!");
     }
+}
+
+function convertDateToEpochTimestampSeconds(date) {
+    return Math.round((new Date()).getTime() / 1000);
+}
+
+function convertEpochTimestampSecondsToDate(timestamp) {
+    return timestamp.toLocaleDateString();
 }
 
 function validateSearchInput(blog, text) {
