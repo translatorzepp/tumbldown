@@ -48,6 +48,7 @@ public class SearchResource {
         LinkedList<Post> resultsPage = new LinkedList<>(Collections.emptyList());
         int additionalPostsNeeded = POSTS_PER_PAGE;
 
+        // Refactor and individual test components
         while ((additionalPostsNeeded > 0) && (likedBeforeTimestampSeconds != null) && likedBeforeTimestampSeconds > maxLikedBefore) {
 
             LinkedList<Post> likedPosts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds);
@@ -85,14 +86,6 @@ public class SearchResource {
         }
 
         return Long.valueOf(timestampSeconds.replaceAll("\\D", ""));
-    }
-
-    static Long getTimestampFromParams(String date, String timezoneId, Long timestampSeconds) {
-        if (timestampSeconds == null) {
-            return convertDateStringToEpochTime(date, timezoneId);
-        }
-
-        return timestampSeconds;
     }
 
     static Long convertDateStringToEpochTime(String date, String timezoneId) {

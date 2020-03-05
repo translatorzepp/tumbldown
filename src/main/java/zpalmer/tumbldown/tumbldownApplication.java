@@ -58,9 +58,6 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
         final BlogResource blogResource = new BlogResource(tumblr);
         environment.jersey().register(blogResource);
 
-        final PostsResource postsResource = new PostsResource(tumblr);
-        environment.jersey().register(postsResource);
-
         final SearchResource searchResource = new SearchResource(tumblr);
         environment.jersey().register(searchResource);
 
