@@ -9,8 +9,8 @@ public class SearchCriteria {
     public SearchCriteria(String blogName, String searchText, Long nextBeforeTimestampSeconds, Long currentBeforeTimestampSeconds) {
         this.blogName = blogName;
         this.searchText = searchText;
-        this.nextBeforeTimestampSeconds = String.valueOf(nextBeforeTimestampSeconds);
-        this.currentBeforeTimestampSeconds = String.valueOf(currentBeforeTimestampSeconds);
+        this.nextBeforeTimestampSeconds = convertToStringWithNull(nextBeforeTimestampSeconds);
+        this.currentBeforeTimestampSeconds = convertToStringWithNull(currentBeforeTimestampSeconds);
     }
 
     public String getBlogName() {
@@ -25,5 +25,12 @@ public class SearchCriteria {
 
     public String getCurrentBeforeTimestampSeconds() {
         return currentBeforeTimestampSeconds;
+    }
+
+    private String convertToStringWithNull(Long timestamp) {
+        if (timestamp != null) {
+            return String.valueOf(timestamp);
+        }
+        return null;
     }
 }

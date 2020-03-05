@@ -6,21 +6,30 @@ function nextPage() {
 function displayDatesFromCriteria() {
     var beforeSearchCriteriaDateElement = document.getElementById("search_criteria_before");
     var beforeTimestamp = beforeSearchCriteriaDateElement.getAttribute("timestamp");
-    if (beforeTimestamp != null) {
-        beforeSearchCriteriaDateElement.innerHTML = convertEpochTimestampSecondsToDate(beforeTimestamp);
+    var beforeTimestampString = convertEpochTimestampSecondsToDate(beforeTimestamp);
+    if (beforeTimestampString != null) {
+        beforeSearchCriteriaDateElement.innerHTML = beforeTimestampString;
     }
 
     var afterSearchCriteriaDateElement = document.getElementById("search_criteria_after");
     var afterTimestamp = afterSearchCriteriaDateElement.getAttribute("timestamp");
-    if (afterTimestamp != null) {
-        afterSearchCriteriaDateElement.innerHTML = convertEpochTimestampSecondsToDate(afterTimestamp);
+    var afterTimestampString = convertEpochTimestampSecondsToDate(afterTimestamp);
+    if (afterTimestampString != null) {
+        afterSearchCriteriaDateElement.innerHTML = afterTimestampString;
+    } else {
+        afterSearchCriteriaDateElement.innerHTML = "end of likes search"
     }
 }
 
 function convertEpochTimestampSecondsToDate(timestamp) {
     timestampMilliseconds = parseInt(timestamp) * 1000;
-    var date = new Date(timestampMilliseconds);
-    return date.toLocaleString();
+
+    if (Number.isNaN(timestampMilliseconds)) {
+        return null;
+    } else {
+        var date = new Date(timestampMilliseconds);
+        return date.toLocaleString();
+    }
 }
 
 function showSearchSpinner() {

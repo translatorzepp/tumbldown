@@ -11,15 +11,16 @@
         <div id="search_criteria">
             Searching for posts liked by <em>${criteria.blogName}</em>
             <#if criteria.searchText?has_content><span> containing <em>${criteria.searchText}</em></span></#if>
-            <#if criteria.currentBeforeTimestampSeconds?has_content>
+            <span <#if criteria.currentBeforeTimestampSeconds?has_content><#else>hidden</#if>>
                 <span> between
                 <em>
-                    <span id="search_criteria_after" timestamp=${criteria.nextBeforeTimestampSeconds}></span>
+                    <span id="search_criteria_after"
+                    timestamp=${criteria.nextBeforeTimestampSeconds!""}></span>
                 </em> and <em>
                     <span id="search_criteria_before" timestamp=${criteria.currentBeforeTimestampSeconds}></span>
                 </em>
                 </span>
-            </#if>
+            </span>
         </div>
 
         <br/><br/>
@@ -38,7 +39,7 @@
                 </#if>
 
                 <small><i>${post.type}</i></small>
-                </br>
+                <br/>
 
                 <div id="tags" style="text-indent:2em">
                     tagged:<#list post.tags as tag><i> #${tag}</i><#else> no tags</#list>
@@ -48,7 +49,7 @@
 
         <#else>
         No posts found in this interval.
-        <br/>
+        <br/><br/>
         </#list>
         </div>
 
@@ -64,14 +65,14 @@
 
         <#if criteria.nextBeforeTimestampSeconds??>
         <#else>
-        <br />
+        <br/><br/>
         No more likes found.
+        <br/><br/>
         </#if>
-        <br/> <br/>
 
+        <br/>
         <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
-
-        <br/> <br/>
+        <br><br/><br><br/><br><br/><br><br/>
         <a href="/search">New search?</a>
     </body>
 </html>
