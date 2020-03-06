@@ -77,11 +77,5 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
                 return new ErrorView(validationErrorMessage);
             }
         });
-
-        final HelloWorldResource helloResource = new HelloWorldResource(
-                configuration.getHelloWorldTemplate(),
-                configuration.getHelloWorldDefaultName()
-        );
-        environment.jersey().register(helloResource);
     }
 }
