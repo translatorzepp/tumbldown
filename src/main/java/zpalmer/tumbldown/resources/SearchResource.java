@@ -59,12 +59,6 @@ public class SearchResource {
             } else {
                 LinkedList<Post> matchingPosts = filterPostsBySearchString(likedPosts, searchText);
 
-                Boolean moreMatchingPostsThanNeededForPage = matchingPosts.size() > additionalPostsNeeded;
-                Boolean returningAllMatchingPostsFromLikedPosts =
-                        matchingPosts.size() < likedPosts.size() &&
-                                matchingPosts.size() <= additionalPostsNeeded;
-
-
                 if (matchingPosts.size() > additionalPostsNeeded) {
                     resultsPage.addAll(matchingPosts.subList(0, additionalPostsNeeded));
                     likedBeforeTimestampSeconds = resultsPage.getLast().getLikedAt();

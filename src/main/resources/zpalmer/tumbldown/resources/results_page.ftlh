@@ -44,6 +44,7 @@
                 <div id="tags" style="text-indent:2em">
                     tagged:<#list post.tags as tag><i> #${tag}</i><#else> no tags</#list>
                 </div>
+                <br/>
             </div>
             <br/>
 
