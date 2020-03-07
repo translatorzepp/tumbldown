@@ -1,11 +1,13 @@
 <#-- @ftlvariable name="" type="zpalmer.tumbldown.core.LikesResultPageView" -->
 <html lang="en">
     <head>
-        <meta charset="utf-8"/>
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
         <script type="text/javascript" src="/assets/javascript/results.js"></script>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>tumbldown: searching likes</title>
     </head>
+
     <body onload="displayDatesFromCriteria()">
         <h1>tumbldown</h1>
         <div id="search_criteria">

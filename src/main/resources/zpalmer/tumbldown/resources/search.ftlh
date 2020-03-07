@@ -1,11 +1,13 @@
 <#-- @ftlvariable name="" type="zpalmer.tumbldown.core.SearchView" -->
 <html lang="en">
     <head>
-        <meta charset="utf-8"/>
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
         <script type="text/javascript" src="/assets/javascript/search.js"></script>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>tumbldown: search tumblr</title>
     </head>
+
     <body>
         <h1>tumbldown</h1>
         <h3>Search</h3>
