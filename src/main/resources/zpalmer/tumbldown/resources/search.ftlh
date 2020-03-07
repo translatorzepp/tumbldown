@@ -16,12 +16,12 @@
             <form action="/search/likes" method="get">
                 <label for="blogName">The blog whose likes you want to search</label>
                 <br />
-                <input type="text" id="blogName" name="blogName" placeholder="tumbldown-app" required></input>
+                <input type="text" id="blogName" name="blogName" autocapitalize="none" autocorrect="off" placeholder="tumbldown-app" required></input>
 
                 <br /><br />
                 <label for="searchText"><small>(optional)</small> What to search for, in tags and summary</label>
                 <br />
-                <input type="search" id="searchText" name="searchText" placeholder="thing to search for"></input>
+                <input type="search" id="searchText" name="searchText" autocapitalize="none" autocorrect="off" placeholder="thing to search for"></input>
 
                 <br /><br />
                 <label for="before"><small>(optional)</small> Search before this date</label>
