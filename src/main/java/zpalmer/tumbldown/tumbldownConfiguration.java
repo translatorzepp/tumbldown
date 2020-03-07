@@ -39,30 +39,4 @@ public class tumbldownConfiguration extends Configuration {
     public void setViewRendererConfiguration(Map<String, Map<String, String>> viewRendererConfiguration) {
         this.viewRendererConfiguration = viewRendererConfiguration;
     }
-
-    @NotEmpty
-    private String helloWorldTemplate;
-
-    @NotEmpty
-    private String helloWorldDefaultName = "Stranger";
-
-    @JsonProperty
-    public String getHelloWorldTemplate() {
-        return helloWorldTemplate;
-    }
-
-    @JsonProperty
-    public void setTemplate(String template) {
-        this.helloWorldTemplate = helloWorldTemplate;
-    }
-
-    @JsonProperty
-    public String getHelloWorldDefaultName() {
-        return helloWorldDefaultName;
-    }
-
-    @JsonProperty
-    public void setHelloWorldDefaultName(String name) {
-        this.helloWorldDefaultName = name;
-    }
 }
