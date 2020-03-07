@@ -4,6 +4,16 @@ function search() {
         document.getElementById('errorMessage').innerHTML = null;
 
         var beforeTimestampSeconds = Math.round((new Date()).getTime() / 1000);
+
+        var beforeDateElement = document.getElementById('beforeDate');
+        var beforeDate = beforeDateElement.value;
+        if (beforeDate != "") {
+            // this works, but because Javascript is Javascript
+            // it loses the timezone and goes to UTC
+            var date = new Date(beforeDate);
+            beforeTimestampSeconds = Math.round(date.getTime() / 1000);
+        }
+
         document.getElementById('beforeTimestamp').value = beforeTimestampSeconds;
 
         document.getElementById('searchForm').submit;
