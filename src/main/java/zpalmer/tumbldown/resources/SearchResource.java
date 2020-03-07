@@ -41,7 +41,7 @@ public class SearchResource {
     ) throws WebApplicationException {
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
 
-        Long initialLikedBeforeTimestampSeconds = getTimestampFromParams(null, null, beforeTimestamp);
+        Long initialLikedBeforeTimestampSeconds = getTimestampFromParams(beforeTimestamp);
         Long likedBeforeTimestampSeconds = initialLikedBeforeTimestampSeconds;
         Long maxLikedBefore = likedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
 
@@ -74,28 +74,12 @@ public class SearchResource {
                 new SearchCriteria(blogName, searchText, likedBeforeTimestampSeconds, initialLikedBeforeTimestampSeconds));
     }
 
-    static Long getTimestampFromParams(String date, String timezoneId, String timestampSeconds) {
-        if (timestampSeconds == null || timestampSeconds.isEmpty()) {
-            return convertDateStringToEpochTime(date, timezoneId);
-        }
-
-        return Long.valueOf(timestampSeconds.replaceAll("\\D", ""));
-    }
-
-    static Long convertDateStringToEpochTime(String date, String timezoneId) {
-        if (date == null || date.isEmpty()) {
+    static Long getTimestampFromParams(String timestampSeconds) {
+        if (timestampSeconds == null || timestampSeconds.isEmpty() || timestampSeconds.equals("0")) {
             return ZonedDateTime.now().toEpochSecond();
         }
 
-        if (timezoneId == null || timezoneId.isEmpty() || timezoneId.equals("undefined")) {
-            timezoneId = "America/Chicago";
-        }
-
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDate.parse(date),
-                LocalTime.of(23, 59, 59),
-                ZoneId.of(timezoneId));
-
-        return zonedDateTime.toEpochSecond();
+        return Long.valueOf(timestampSeconds.replaceAll("\\D", ""));
     }
 
     LinkedList<Post> getLikesBefore(String blogName, Long likedBeforeTimestampSeconds)

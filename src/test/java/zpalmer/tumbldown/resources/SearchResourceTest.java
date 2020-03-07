@@ -28,29 +28,6 @@ public class SearchResourceTest {
     private LinkedList<Post> posts = new LinkedList<>();
 
     @Test
-    public void convertsStringDatesToEpoch() {
-        Long expectedUtc = 1580601599L;
-        Long actualUtc = SearchResource.convertDateStringToEpochTime("2020-02-01", "Africa/Abidjan");
-        assertThat(actualUtc).isEqualTo(expectedUtc);
-
-        Long expectedAltTimezone = 1577944799L;
-        Long actualAltTimezone = SearchResource.convertDateStringToEpochTime("2020-01-01", "America/Chicago");
-        assertThat(actualAltTimezone).isEqualTo(expectedAltTimezone);
-
-        Long expectedAltTimezoneDaylightSavingsChange = 1601787599L;
-        Long actualAltTimezoneDaylightSavingsChange = SearchResource.convertDateStringToEpochTime("2020-10-03", "America/Chicago");
-        assertThat(expectedAltTimezoneDaylightSavingsChange).isEqualTo(actualAltTimezoneDaylightSavingsChange);
-
-        Long expectedNoTimezone = 1577944799L;
-        Long actualNoTimezone = SearchResource.convertDateStringToEpochTime("2020-01-01", "");
-        assertThat(actualNoTimezone).isEqualTo(expectedNoTimezone);
-
-        Long expectedNullInput = ZonedDateTime.now().toEpochSecond();
-        Long actualNullInput = SearchResource.convertDateStringToEpochTime(null, null);
-        assertThat(actualNullInput).isEqualTo(expectedNullInput);
-    }
-
-    @Test
     public void selectOnlyPostsWithSearchTerm() {
         posts.add(postWithSearchStringInSummary);
         posts.add(postWithoutSearchString);
