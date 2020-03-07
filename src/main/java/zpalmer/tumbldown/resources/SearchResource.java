@@ -117,6 +117,9 @@ public class SearchResource {
                 errorDetails = blogName + "'s likes are not public.";
             } else if (tumblrErrorStatusCode == 404) {
                 errorDetails = blogName + " does not exist.";
+            } else if (tumblrErrorStatusCode == 429) {
+                // TODO: extract time details from X-Ratelimit headers and suggest a time window in the error message
+                errorDetails = "Tumblr thinks tumbldown is making too many requests. Wait a while and try again.";
             } else if(tumblrErrorStatusCode >= 500) {
                 errorDetails= "Tumblr is down or unreachable.";
             } else {
