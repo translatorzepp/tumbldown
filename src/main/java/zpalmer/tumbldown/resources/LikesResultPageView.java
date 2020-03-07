@@ -4,6 +4,7 @@ import io.dropwizard.views.View;
 import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.core.SearchCriteria;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 public class LikesResultPageView extends View {
@@ -11,7 +12,7 @@ public class LikesResultPageView extends View {
     private final SearchCriteria criteria;
 
     public LikesResultPageView(List<Post> posts, SearchCriteria criteria) {
-        super("results_page.ftlh");
+        super("results_page.ftlh", Charset.forName("UTF-8"));
         this.posts = posts;
         this.criteria = criteria;
     }

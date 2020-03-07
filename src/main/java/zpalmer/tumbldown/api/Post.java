@@ -7,11 +7,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
 
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Post {
     // TODO: turn this into an abstract class and subclass the various post types, including an unknown type with only the common fields!
-
     private String creatorBlogName;
     private Long id;
     private Long likedAt;
@@ -39,7 +37,6 @@ public class Post {
     @JsonProperty
     public Long getId() { return id; }
     public String getSummary() { return summary; }
-
     public ArrayList<String> getTags() { return tags; }
     public String getType() { return type; }
 
