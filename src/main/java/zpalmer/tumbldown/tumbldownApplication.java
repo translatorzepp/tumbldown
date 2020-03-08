@@ -3,6 +3,8 @@ package zpalmer.tumbldown;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.client.JerseyClientBuilder;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.jersey.errors.ErrorEntityWriter;
 import io.dropwizard.jersey.errors.ErrorMessage;
 import io.dropwizard.jersey.validation.ValidationErrorMessage;
@@ -36,6 +38,11 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
     @Override
     public void initialize(final Bootstrap<tumbldownConfiguration> bootstrap) {
         // In the constructor of your Application you can add Bundles and Commands to your application.
+        bootstrap.setConfigurationSourceProvider(
+                new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
+                        new EnvironmentVariableSubstitutor(false)
+                )
+        );
         bootstrap.addBundle(new ViewBundle<tumbldownConfiguration>(){
             @Override
             public Map<String, Map<String, String>> getViewConfiguration(tumbldownConfiguration configuration) {

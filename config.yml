@@ -1,3 +1,8 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: ${PORT:-8080}
+
 jerseyClient:
   timeout: 45000ms
   connectionTimeout: 1500ms
