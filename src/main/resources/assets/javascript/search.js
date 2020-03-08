@@ -7,12 +7,7 @@ function search() {
 
         var beforeDateElement = document.getElementById('beforeDate');
         var beforeDate = beforeDateElement.value;
-        if (beforeDate != "") {
-            // this works, but because Javascript is Javascript
-            // it loses the timezone and goes to UTC
-            var date = new Date(beforeDate);
-            beforeTimestampSeconds = Math.round(date.getTime() / 1000);
-        }
+        beforeTimestampSeconds = convertDateStringToEpochTimestampSeconds(beforeDate);
 
         document.getElementById('beforeTimestamp').value = beforeTimestampSeconds;
 
@@ -23,12 +18,16 @@ function search() {
     }
 }
 
-function convertDateToEpochTimestampSeconds(date) {
-    return Math.round((new Date()).getTime() / 1000);
-}
-
-function convertEpochTimestampSecondsToDate(timestamp) {
-    return timestamp.toLocaleDateString();
+function convertDateStringToEpochTimestampSeconds(dateString) {
+    if (beforeDate != null && beforeDate != "") {
+            var date = new Date(beforeDate);
+            date.setHours(00);
+            date.setMinutes(00);
+            date.setSeconds(00);
+            return Math.round(date.getTime() / 1000);
+    } else {
+        return Math.round((new Date()).getTime() / 1000);
+    }
 }
 
 function validateSearchInput(blog, text) {
