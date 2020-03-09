@@ -70,8 +70,10 @@ public class SearchResource {
             additionalPostsNeeded = POSTS_PER_PAGE - resultsPage.size();
         }
 
-        return new LikesResultPageView(resultsPage,
-                new SearchCriteria(blogName, searchText, likedBeforeTimestampSeconds, initialLikedBeforeTimestampSeconds));
+        return new LikesResultPageView(
+                resultsPage,
+                new SearchCriteria(blogName, searchText, likedBeforeTimestampSeconds, initialLikedBeforeTimestampSeconds)
+        );
     }
 
     static Long getTimestampFromParams(String timestampSeconds) {

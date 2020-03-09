@@ -10,6 +10,7 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
+import org.mockito.Mockito;
 import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.api.tumblr.TumblrFailureResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponseMeta;
@@ -33,12 +34,22 @@ public class SearchResourceTest {
         posts.add(postWithoutSearchString);
         posts.add(postWithSearchStringInTag);
 
-        Collection<Post> searchResults = new SearchResource(mock(Tumblr.class))
+        Collection<Post> searchResults = new SearchResource(fakeTumblr)
                 .filterPostsBySearchString(posts, "gay");
 
         assertThat(searchResults).contains(postWithSearchStringInTag);
         assertThat(searchResults).doesNotContain(postWithoutSearchString);
         assertThat(searchResults).contains(postWithSearchStringInTag);
+    }
+
+    @Test
+    public void searchHandleNullTimestamp() {
+        when(fakeTumblr.getLikes(anyString(), anyLong())).thenReturn(new TumblrSuccessResponse());
+        SearchResource searchResource = new SearchResource(fakeTumblr);
+
+        searchResource.displayResultsPage("tumbldown", "text", null);
+        Mockito.verify(fakeTumblr, Mockito.times(1))
+                .getLikes("tumbldown", ZonedDateTime.now().toEpochSecond());
     }
 
     @Test
