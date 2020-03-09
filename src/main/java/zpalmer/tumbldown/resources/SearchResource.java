@@ -11,9 +11,6 @@ import zpalmer.tumbldown.core.SearchCriteria;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -48,7 +45,7 @@ public class SearchResource {
         LinkedList<Post> resultsPage = new LinkedList<>(Collections.emptyList());
         int additionalPostsNeeded = POSTS_PER_PAGE;
 
-        // Refactor and individual test components
+        // TODO: Refactor and individual test components
         while ((additionalPostsNeeded > 0) && (likedBeforeTimestampSeconds != null) && likedBeforeTimestampSeconds > maxLikedBefore) {
 
             LinkedList<Post> likedPosts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds);
@@ -76,7 +73,7 @@ public class SearchResource {
         );
     }
 
-    static Long getTimestampFromParams(String timestampSeconds) {
+    private Long getTimestampFromParams(String timestampSeconds) {
         if (timestampSeconds == null || timestampSeconds.isEmpty() || timestampSeconds.equals("0")) {
             return ZonedDateTime.now().toEpochSecond();
         }
@@ -115,7 +112,7 @@ public class SearchResource {
         }
     }
 
-    protected LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, String searchText) {
+    LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, String searchText) {
         LinkedList<Post> matchingPosts = new LinkedList<>();
         matchingPosts.addAll(posts);
 

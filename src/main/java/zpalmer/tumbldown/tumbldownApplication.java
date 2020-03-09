@@ -37,7 +37,6 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
 
     @Override
     public void initialize(final Bootstrap<tumbldownConfiguration> bootstrap) {
-        // In the constructor of your Application you can add Bundles and Commands to your application.
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
                         new EnvironmentVariableSubstitutor(false)

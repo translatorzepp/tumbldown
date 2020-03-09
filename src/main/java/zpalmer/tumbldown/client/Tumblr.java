@@ -22,7 +22,6 @@ public class Tumblr {
     private static final int LIMIT = 50;
     private static final int TUMBLR_LIMIT = LIMIT - 1; // because they zeroth this :|
 
-
     private Client client;
 
     public Tumblr(Client client) {
