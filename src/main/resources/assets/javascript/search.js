@@ -19,7 +19,7 @@ function search() {
 }
 
 function convertDateStringToEpochTimestampSeconds(dateString) {
-    if (beforeDate != null && beforeDate != "") {
+    if (dateString != null && dateString != "") {
             var date = new Date(beforeDate);
             date.setHours(00);
             date.setMinutes(00);
