@@ -43,12 +43,25 @@ public class SearchResourceTest {
     }
 
     @Test
-    public void searchHandleNullTimestamp() {
+    public void searchPassesThroughGoodTimestamp() {
+        when(fakeTumblr.getLikes(anyString(), anyLong())).thenReturn(new TumblrSuccessResponse());
+        SearchResource searchResource = new SearchResource(fakeTumblr);
+
+        searchResource.displayResultsPage("tumbldown", "text", "1111111111");
+        Mockito.verify(fakeTumblr, Mockito.times(1))
+                .getLikes("tumbldown", 1111111111L);
+    }
+
+    @Test
+    public void searchHandleBadTimestamp() {
         when(fakeTumblr.getLikes(anyString(), anyLong())).thenReturn(new TumblrSuccessResponse());
         SearchResource searchResource = new SearchResource(fakeTumblr);
 
         searchResource.displayResultsPage("tumbldown", "text", null);
-        Mockito.verify(fakeTumblr, Mockito.times(1))
+        searchResource.displayResultsPage("tumbldown", "text", "NaN");
+        searchResource.displayResultsPage("tumbldown", "text", "undefined");
+        searchResource.displayResultsPage("tumbldown", "text", "0");
+        Mockito.verify(fakeTumblr, Mockito.times(4))
                 .getLikes("tumbldown", ZonedDateTime.now().toEpochSecond());
     }
 

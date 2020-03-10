@@ -74,11 +74,14 @@ public class SearchResource {
     }
 
     private Long getTimestampFromParams(String timestampSeconds) {
-        if (timestampSeconds == null || timestampSeconds.isEmpty() || timestampSeconds.equals("0")) {
-            return ZonedDateTime.now().toEpochSecond();
+        if (timestampSeconds != null) {
+            String digitOnlyTimestamp = timestampSeconds.replaceAll("\\D", "");
+            if (!digitOnlyTimestamp.isEmpty() && !digitOnlyTimestamp.equals("0")) {
+                return Long.valueOf(digitOnlyTimestamp);
+            }
         }
 
-        return Long.valueOf(timestampSeconds.replaceAll("\\D", ""));
+        return ZonedDateTime.now().toEpochSecond();
     }
 
     LinkedList<Post> getLikesBefore(String blogName, Long likedBeforeTimestampSeconds)
