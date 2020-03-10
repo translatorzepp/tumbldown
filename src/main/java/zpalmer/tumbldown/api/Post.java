@@ -3,6 +3,7 @@ package zpalmer.tumbldown.api;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class Post {
     private ArrayList<String> tags;
     private String type;
     private URL url;
+    private URL appUrl;
 
     public Post() { }
 
@@ -45,6 +47,16 @@ public class Post {
 
     @JsonProperty("liked_timestamp")
     public Long getLikedAt() { return likedAt; }
+
+    public URL getAppUrl() {
+        String httpsSchemeLink = "https://www.tumblr.com/open/app?referrer=tumblr_new_iframe&app_args=blog%3FblogName%3D" + likedFromBlogName + "%26page%3Dpermalink%26postID%3D" + id;
+        String tumblrSchemeLink = "tumblr://x-callback-url/blog?blogName=" + likedFromBlogName + "&page=permalink&postID=" + id + "#_=_";
+        try {
+            return new URL(httpsSchemeLink);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
 
     public boolean equals(Post otherPost) {
         if (getId() != null && otherPost.getId() != null) {
