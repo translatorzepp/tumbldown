@@ -46,6 +46,11 @@
                 <div class="tags" style="text-indent:2em">
                     tagged:<#list post.tags as tag><i> #${tag}</i><#else> no tags</#list>
                 </div>
+
+                <div class="appLink" style="text-indent:2em">
+                    <a href=${post.appUrl!"https://www.tumblr.com"}>try opening in app</a>
+                </div>
+
                 <br/>
             </div>
             <br/>

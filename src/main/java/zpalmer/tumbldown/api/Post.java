@@ -3,6 +3,9 @@ package zpalmer.tumbldown.api;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -19,6 +22,7 @@ public class Post {
     private ArrayList<String> tags;
     private String type;
     private URL url;
+    private URI appUrl;
 
     public Post() { }
 
@@ -45,6 +49,16 @@ public class Post {
 
     @JsonProperty("liked_timestamp")
     public Long getLikedAt() { return likedAt; }
+
+    public URI getAppUrl() {
+        String httpsSchemeLink = "https://www.tumblr.com/open/app?referrer=tumblr_new_iframe&app_args=blog?blogName=" + likedFromBlogName + "&page=permalink&postID=" + id;
+        // ^ works but only on a Long Press > Open in Tumblr App
+        try {
+            return new URI(httpsSchemeLink);
+        } catch (URISyntaxException e) {
+            return null;
+        }
+    }
 
     public boolean equals(Post otherPost) {
         if (getId() != null && otherPost.getId() != null) {
