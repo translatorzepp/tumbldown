@@ -43,7 +43,7 @@
                 <small><i>${post.type}</i></small>
                 <br/>
 
-                <div id="tags" style="text-indent:2em">
+                <div class="tags" style="text-indent:2em">
                     tagged:<#list post.tags as tag><i> #${tag}</i><#else> no tags</#list>
                 </div>
                 <br/>
@@ -75,7 +75,7 @@
 
         <br/>
         <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
-        <br><br/><br><br/><br><br/><br><br/>
+        <br><br/><br><br/><br><br/>
         <a href="/search">New search?</a>
     </body>
 </html>
