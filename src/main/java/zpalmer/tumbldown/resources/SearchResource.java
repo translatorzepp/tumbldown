@@ -9,6 +9,7 @@ import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
 import zpalmer.tumbldown.core.SearchCriteria;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.time.ZonedDateTime;
@@ -32,7 +33,7 @@ public class SearchResource {
     @GET
     @Timed
     @Path("likes")
-    public LikesResultPageView displayResultsPage(@QueryParam("blogName") @NotEmpty String blogName,
+    public LikesResultPageView displayResultsPage(@QueryParam("blogName") @NotEmpty @NotNull String blogName,
                                                   @QueryParam("searchText") String searchText,
                                                   @QueryParam("beforeTimestamp") String beforeTimestamp
     ) throws WebApplicationException {
