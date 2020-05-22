@@ -12,13 +12,13 @@ public class ErrorView extends View {
     private final List<String> validationErrors;
 
     public ErrorView(ErrorMessage error) {
-        super("error.ftl");
+        super("error.ftlh");
         this.error = error;
         this.validationErrors = null;
     }
 
     public ErrorView(ValidationErrorMessage validationErrors) {
-        super("error.ftl");
+        super("error.ftlh");
         this.error = null;
         this.validationErrors = validationErrors.getErrors();
     }
@@ -26,5 +26,8 @@ public class ErrorView extends View {
     public ErrorMessage getError() {
         return error;
     }
-    public List<String> getValidationErrors() { return validationErrors; }
+
+    public List<String> getValidationErrors() {
+        return validationErrors;
+    }
 }

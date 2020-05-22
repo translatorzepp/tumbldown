@@ -2,10 +2,10 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
-        <script type="text/javascript" src="/assets/javascript/results.js"></script>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>tumbldown: searching likes</title>
+        <script type="text/javascript" src="/assets/javascript/results.js"></script>
     </head>
 
     <body onload="displayDatesFromCriteria()">

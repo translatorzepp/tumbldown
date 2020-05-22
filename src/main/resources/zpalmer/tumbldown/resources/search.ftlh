@@ -2,15 +2,15 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
-        <script type="text/javascript" src="/assets/javascript/search.js"></script>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>tumbldown: search tumblr</title>
+        <script type="text/javascript" src="/assets/javascript/search.js"></script>
     </head>
 
     <body>
         <h1>tumbldown</h1>
-        <h3>Search</h3>
+        <h3>Search Likes</h3>
 
         <div id="searchForm">
             <form action="/search/likes" method="get">

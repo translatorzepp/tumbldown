@@ -42,7 +42,7 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
                         new EnvironmentVariableSubstitutor(false)
                 )
         );
-        bootstrap.addBundle(new ViewBundle<tumbldownConfiguration>(){
+        bootstrap.addBundle(new ViewBundle<tumbldownConfiguration>() {
             @Override
             public Map<String, Map<String, String>> getViewConfiguration(tumbldownConfiguration configuration) {
                 return configuration.getViewRendererConfiguration();

@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import io.dropwizard.Configuration;
 import io.dropwizard.client.JerseyClientConfiguration;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer;
-import org.hibernate.validator.constraints.*;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 import java.util.Map;
