@@ -17,7 +17,7 @@ public class Post {
     private String slug;
     private String summary;
     private ArrayList<String> tags;
-    private String type;
+    private String type; // text, quote, link, answer, video, audio, photo, chat
     private URL url;
 
     public Post() { }
@@ -26,6 +26,19 @@ public class Post {
         this.id = id;
         this.summary = summary;
         this.tags = tags;
+    }
+
+    public Post(Long id, String summary, String type) {
+        this.id = id;
+        this.summary = summary;
+        this.type = type;
+    }
+
+    public Post(Long id, String summary, ArrayList<String> tags, String type) {
+        this.id = id;
+        this.summary = summary;
+        this.tags = tags;
+        this.type = type;
     }
 
     @JsonProperty("blog_name")
@@ -68,5 +81,13 @@ public class Post {
         }
 
         return false;
+    }
+
+    public boolean isOfType(String type) {
+        return type.equalsIgnoreCase(getType());
+    }
+
+    public String toString() {
+        return super.toString() + "{id:" + getId().toString() + ",type:" + getType() + "}";
     }
 }

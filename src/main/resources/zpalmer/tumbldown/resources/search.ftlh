@@ -28,6 +28,18 @@
                 <br />
                 <input type="date" id="beforeDate"></input>
 
+                <br /><br />
+                <label for="postTypes"><small>(optional)</small> Search for posts of this type</label>
+                <br />
+                <input type="checkbox" name="postTypes" value="photo">photo</input>
+                <input type="checkbox" name="postTypes" value="video">video</input>
+                <input type="checkbox" name="postTypes" value="audio">audio</input>
+                <input type="checkbox" name="postTypes" value="text">text</input>
+                <input type="checkbox" name="postTypes" value="quote">quote</input>
+                <input type="checkbox" name="postTypes" value="link">link</input>
+                <input type="checkbox" name="postTypes" value="chat">chat</input>
+                <input type="checkbox" name="postTypes" value="answer">answer</input>
+
                 <input type="text" id="beforeTimestamp" name="beforeTimestamp" hidden></input>
 
                 <br /><br />

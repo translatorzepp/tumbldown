@@ -62,6 +62,10 @@
                 <input hidden type="search" id="searchText" name="searchText" value="${criteria.searchText}"></input>
                 <input hidden type="text" id="beforeTimestamp" name="beforeTimestamp" value=${criteria.nextBeforeTimestampSeconds!""}></input>
 
+                <#list criteria.postTypes as type>
+                <input hidden type="checkbox" name="postTypes" value=${type} checked></input>
+                </#list>
+
                 <button <#if criteria.nextBeforeTimestampSeconds??><#else>disabled</#if> onclick="nextPage()">Next Page</button>
             </form>
         </div>
