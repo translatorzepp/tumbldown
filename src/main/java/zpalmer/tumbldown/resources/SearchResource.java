@@ -1,6 +1,7 @@
 package zpalmer.tumbldown.resources;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.ImmutableList;
 import org.hibernate.validator.constraints.NotEmpty;
 import zpalmer.tumbldown.api.Blog;
 import zpalmer.tumbldown.api.Post;
@@ -15,6 +16,9 @@ import javax.ws.rs.core.MediaType;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Path("search")
 @Produces(MediaType.TEXT_HTML)
@@ -35,7 +39,8 @@ public class SearchResource {
     @Path("likes")
     public LikesResultPageView displayResultsPage(@QueryParam("blogName") @NotEmpty @NotNull String blogName,
                                                   @QueryParam("searchText") String searchText,
-                                                  @QueryParam("beforeTimestamp") String beforeTimestamp
+                                                  @QueryParam("beforeTimestamp") String beforeTimestamp,
+                                                  @QueryParam("postTypes") final List<String> postTypes
     ) throws WebApplicationException {
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
 
@@ -55,7 +60,7 @@ public class SearchResource {
                 likedBeforeTimestampSeconds = null;
 
             } else {
-                LinkedList<Post> matchingPosts = filterPostsBySearchString(likedPosts, searchText);
+                LinkedList<Post> matchingPosts = filterPostsBySearchCriteria(likedPosts, searchText, postTypes);
 
                 if (matchingPosts.size() > additionalPostsNeeded) {
                     resultsPage.addAll(matchingPosts.subList(0, additionalPostsNeeded));
@@ -70,7 +75,11 @@ public class SearchResource {
 
         return new LikesResultPageView(
                 resultsPage,
-                new SearchCriteria(blogName, searchText, likedBeforeTimestampSeconds, initialLikedBeforeTimestampSeconds)
+                new SearchCriteria(blogName,
+                        searchText,
+                        likedBeforeTimestampSeconds,
+                        initialLikedBeforeTimestampSeconds,
+                        postTypes)
         );
     }
 
@@ -125,5 +134,24 @@ public class SearchResource {
         }
 
         return matchingPosts;
+    }
+
+    LinkedList<Post> filterPostsBySearchCriteria(LinkedList<Post> posts, String searchText, List<String> searchPostTypes) {
+        ImmutableList.Builder<Predicate<Post>> searchCriteriaBuilder = ImmutableList.builder();
+
+        if (searchPostTypes.isEmpty()) {
+            return filterPostsBySearchString(posts, searchText);
+        }
+
+        searchCriteriaBuilder.add((Post post) -> searchPostTypes.stream().anyMatch(post::isOfType));
+        if (searchText != null && !searchText.isEmpty()) {
+            searchCriteriaBuilder.add((Post post) -> post.containsText(searchText));
+        }
+        ImmutableList<Predicate<Post>> searchCriteria = searchCriteriaBuilder.build();
+
+        return posts
+                .stream()
+                .filter(post -> searchCriteria.stream().allMatch(criteria -> criteria.test(post)))
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 }

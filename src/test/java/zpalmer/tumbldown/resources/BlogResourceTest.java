@@ -10,7 +10,7 @@ public class BlogResourceTest {
         String fullBlogName = "tumbldown-app.tumblr.com";
         String spaceBlogName = "  tumbldown-app ";
         String shortBlogName = "tumbldown-app";
-        String capitalizedBlogName = "Tumbldown-app";
+        String capitalizedBlogName = "TumblDown-app";
 
         assertThat(Blog.sanitizeBlogName(fullBlogName)).isEqualTo("tumbldown-app");
         assertThat(Blog.sanitizeBlogName(spaceBlogName)).isEqualTo("tumbldown-app");

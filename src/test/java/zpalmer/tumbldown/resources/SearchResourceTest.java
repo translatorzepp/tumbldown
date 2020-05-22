@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import javax.ws.rs.WebApplicationException;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -21,15 +22,19 @@ import zpalmer.tumbldown.client.Tumblr;
 public class SearchResourceTest {
     private Tumblr fakeTumblr = mock(Tumblr.class);
 
-    private static Post postWithSearchStringInSummary = new Post(12345L, "I feel pretty and witty and gay", new ArrayList<>());
+    private static Post postWithSearchStringInSummary = new Post(12345L, "I feel pretty and witty and gay", new ArrayList<>(), "quote");
     private static Post postWithoutSearchString = new Post(35813L, "I feel pretty and witty and bright", new ArrayList<>());
     private static Post postWithSearchStringInTag = new Post(11235L, "I love my wife!",
             new ArrayList<>(Collections.singletonList("gay")));
 
-    private LinkedList<Post> posts = new LinkedList<>();
+    private static Post postOfTypeText = new Post(4L, "summary", "text");
+    private static Post postOfTypeVideo = new Post(5L, "summary", "video");
+    private static Post postOfTypeImage = new Post(6L, "summary", "photo");
+    private static Post postOfTypeQuote = new Post(7L, "gay summary", "quote");
 
     @Test
     public void selectOnlyPostsWithSearchTerm() {
+        LinkedList<Post> posts = new LinkedList<>();
         posts.add(postWithSearchStringInSummary);
         posts.add(postWithoutSearchString);
         posts.add(postWithSearchStringInTag);
@@ -37,9 +42,50 @@ public class SearchResourceTest {
         Collection<Post> searchResults = new SearchResource(fakeTumblr)
                 .filterPostsBySearchString(posts, "gay");
 
+        assertThat(searchResults).contains(postWithSearchStringInSummary);
         assertThat(searchResults).contains(postWithSearchStringInTag);
         assertThat(searchResults).doesNotContain(postWithoutSearchString);
-        assertThat(searchResults).contains(postWithSearchStringInTag);
+    }
+
+    @Test
+    public void selectOnlyPostsOfMatchingType() {
+        LinkedList<Post> posts = new LinkedList<>();
+        posts.add(postOfTypeText);
+        posts.add(postOfTypeVideo);
+        posts.add(postOfTypeImage);
+        posts.add(postOfTypeQuote);
+
+        Collection<Post> searchResults = new SearchResource(fakeTumblr)
+                .filterPostsBySearchCriteria(posts,
+                        "",
+                        new ImmutableList.Builder<String>()
+                                .add("video")
+                                .add("quote")
+                                .build());
+
+        assertThat(searchResults).containsExactly(postOfTypeVideo, postOfTypeQuote);
+    }
+
+    @Test
+    public void selectOnlyPostsThatMeetAllCriteria() {
+        LinkedList<Post> posts = new LinkedList<>();
+        posts.add(postWithSearchStringInSummary); // match gay and quote
+        posts.add(postWithoutSearchString); // match neither
+        posts.add(postOfTypeText); // match neither
+        posts.add(postOfTypeVideo); // match neither
+        posts.add(postOfTypeImage); // match neither
+        posts.add(postOfTypeQuote); // match gay and quote
+        posts.add(postWithSearchStringInTag); // match gay but not quote
+
+        Collection<Post> searchResults = new SearchResource(fakeTumblr)
+                .filterPostsBySearchCriteria(posts,
+                        "gay",
+                        new ImmutableList.Builder<String>()
+                                .add("video")
+                                .add("quote")
+                                .build());
+
+        assertThat(searchResults).containsExactly(postWithSearchStringInSummary, postOfTypeQuote);
     }
 
     @Test
@@ -47,7 +93,7 @@ public class SearchResourceTest {
         when(fakeTumblr.getLikes(anyString(), anyLong())).thenReturn(new TumblrSuccessResponse());
         SearchResource searchResource = new SearchResource(fakeTumblr);
 
-        searchResource.displayResultsPage("tumbldown", "text", "1111111111");
+        searchResource.displayResultsPage("tumbldown", "text", "1111111111", null);
         Mockito.verify(fakeTumblr, Mockito.times(1))
                 .getLikes("tumbldown", 1111111111L);
     }
@@ -57,10 +103,10 @@ public class SearchResourceTest {
         when(fakeTumblr.getLikes(anyString(), anyLong())).thenReturn(new TumblrSuccessResponse());
         SearchResource searchResource = new SearchResource(fakeTumblr);
 
-        searchResource.displayResultsPage("tumbldown", "text", null);
-        searchResource.displayResultsPage("tumbldown", "text", "NaN");
-        searchResource.displayResultsPage("tumbldown", "text", "undefined");
-        searchResource.displayResultsPage("tumbldown", "text", "0");
+        searchResource.displayResultsPage("tumbldown", "text", null, null);
+        searchResource.displayResultsPage("tumbldown", "text", "NaN", null);
+        searchResource.displayResultsPage("tumbldown", "text", "undefined", null);
+        searchResource.displayResultsPage("tumbldown", "text", "0", null);
         Mockito.verify(fakeTumblr, Mockito.times(4))
                 .getLikes("tumbldown", ZonedDateTime.now().toEpochSecond());
     }
