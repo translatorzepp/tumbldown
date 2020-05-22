@@ -40,7 +40,7 @@ public class SearchResourceTest {
         posts.add(postWithSearchStringInTag);
 
         Collection<Post> searchResults = new SearchResource(fakeTumblr)
-                .filterPostsBySearchString(posts, "gay");
+                .filterPostsBySearchCriteria(posts, "gay", null);
 
         assertThat(searchResults).contains(postWithSearchStringInSummary);
         assertThat(searchResults).contains(postWithSearchStringInTag);

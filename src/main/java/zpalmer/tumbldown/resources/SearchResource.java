@@ -125,28 +125,17 @@ public class SearchResource {
         }
     }
 
-    LinkedList<Post> filterPostsBySearchString(LinkedList<Post> posts, String searchText) {
-        LinkedList<Post> matchingPosts = new LinkedList<>();
-        matchingPosts.addAll(posts);
-
-        if (searchText != null && !searchText.isEmpty()) {
-            matchingPosts.removeIf(post -> !post.containsText(searchText));
-        }
-
-        return matchingPosts;
-    }
-
     LinkedList<Post> filterPostsBySearchCriteria(LinkedList<Post> posts, String searchText, List<String> searchPostTypes) {
         ImmutableList.Builder<Predicate<Post>> searchCriteriaBuilder = ImmutableList.builder();
 
-        if (searchPostTypes.isEmpty()) {
-            return filterPostsBySearchString(posts, searchText);
-        }
-
-        searchCriteriaBuilder.add((Post post) -> searchPostTypes.stream().anyMatch(post::isOfType));
         if (searchText != null && !searchText.isEmpty()) {
             searchCriteriaBuilder.add((Post post) -> post.containsText(searchText));
         }
+
+        if (searchPostTypes != null && !searchPostTypes.isEmpty()) {
+            searchCriteriaBuilder.add((Post post) -> searchPostTypes.stream().anyMatch(post::isOfType));
+        }
+
         ImmutableList<Predicate<Post>> searchCriteria = searchCriteriaBuilder.build();
 
         return posts
