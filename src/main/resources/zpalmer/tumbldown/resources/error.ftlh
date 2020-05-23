@@ -6,21 +6,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>tumbldown: error</title>
     </head>
+
     <body>
+        <h1>tumbldown</h1>
 
-    <h1>tumbldown</h1>
-    <div>
-        <small>:( something went wrong.</small>
+        <div>
+            <small>:( something went wrong.</small>
 
-        <#if error??>
-            <p>${error.message}</p>
-        </#if>
-        <#if validationErrors??>
-            <p>Your search terms were invalid.</p>
-            <#list validationErrors as validationError><p>${validationError}</p></#list>
-        </#if>
+            <#if error??>
+                <p>${error.message}</p>
+            </#if>
+            <#if validationErrors??>
+                <p>Your search terms were invalid.</p>
+                <#list validationErrors as validationError><p>${validationError}</p></#list>
+            </#if>
 
-        <a href="/search">Back to search</a>
-    </div>
+            <a href="/search">Back to search</a>
+        </div>
+
+        <#include "footer.ftlh">
     </body>
 </html>

@@ -10,6 +10,7 @@
 
     <body onload="displayDatesFromCriteria()">
         <h1>tumbldown</h1>
+
         <div id="search_criteria">
             Searching for posts liked by <em>${criteria.blogName}</em>
             <#if criteria.searchText?has_content><span> containing <em>${criteria.searchText}</em></span></#if>
@@ -79,7 +80,9 @@
 
         <br/>
         <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
-        <br><br/><br><br/><br><br/>
+        <br/><br/><br/>
         <a href="/search">New search?</a>
+
+        <#include "footer.ftlh">
     </body>
 </html>

@@ -50,5 +50,7 @@
         <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
 
         <div class="error" id="errorMessage"></div>
+
+        <#include "footer.ftlh">
     </body>
 </html>
