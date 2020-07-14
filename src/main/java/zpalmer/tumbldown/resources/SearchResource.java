@@ -53,8 +53,8 @@ public class SearchResource {
         int additionalPostsNeeded = POSTS_PER_PAGE;
 
 		String likedFromBlogName;
-		if (likedFromBlog && !likedFromBlog.isEmpty()) {
-			likedFromBlogName = Blog.sanitizeBlogName();
+		if (likedFromBlog != null && !likedFromBlog.isEmpty()) {
+			likedFromBlogName = Blog.sanitizeBlogName(likedFromBlog);
 		}
 
         // TODO: Refactor and individual test components
