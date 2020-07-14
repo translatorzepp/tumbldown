@@ -40,7 +40,8 @@ public class SearchResource {
     public LikesResultPageView displayResultsPage(@QueryParam("blogName") @NotEmpty @NotNull String blogName,
                                                   @QueryParam("searchText") String searchText,
                                                   @QueryParam("beforeTimestamp") String beforeTimestamp,
-                                                  @QueryParam("postTypes") final List<String> postTypes
+                                                  @QueryParam("postTypes") final List<String> postTypes,
+                                                  @QueryParam("likedFromBlog") String likedFromBlog
     ) throws WebApplicationException {
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
 
@@ -51,6 +52,11 @@ public class SearchResource {
         LinkedList<Post> resultsPage = new LinkedList<>(Collections.emptyList());
         int additionalPostsNeeded = POSTS_PER_PAGE;
 
+		String likedFromBlogName;
+		if (likedFromBlog && !likedFromBlog.isEmpty()) {
+			likedFromBlogName = Blog.sanitizeBlogName();
+		}
+
         // TODO: Refactor and individual test components
         while ((additionalPostsNeeded > 0) && (likedBeforeTimestampSeconds != null) && likedBeforeTimestampSeconds > maxLikedBefore) {
 
@@ -60,7 +66,7 @@ public class SearchResource {
                 likedBeforeTimestampSeconds = null;
 
             } else {
-                LinkedList<Post> matchingPosts = filterPostsBySearchCriteria(likedPosts, searchText, postTypes);
+                LinkedList<Post> matchingPosts = filterPostsBySearchCriteria(likedPosts, searchText, postTypes, likedFromBlogName);
 
                 if (matchingPosts.size() > additionalPostsNeeded) {
                     resultsPage.addAll(matchingPosts.subList(0, additionalPostsNeeded));
@@ -75,11 +81,12 @@ public class SearchResource {
 
         return new LikesResultPageView(
                 resultsPage,
-                new SearchCriteria(blogName,
-                        searchText,
-                        likedBeforeTimestampSeconds,
-                        initialLikedBeforeTimestampSeconds,
-                        postTypes)
+				new SearchCriteria(blogToSearch,
+						searchText,
+						likedBeforeTimestampSeconds,
+						initialLikedBeforeTimestampSeconds,
+						postTypes,
+						likedFromBlogName)
         );
     }
 
@@ -125,7 +132,7 @@ public class SearchResource {
         }
     }
 
-    LinkedList<Post> filterPostsBySearchCriteria(LinkedList<Post> posts, String searchText, List<String> searchPostTypes) {
+    LinkedList<Post> filterPostsBySearchCriteria(LinkedList<Post> posts, String searchText, List<String> searchPostTypes, String likedFromBlogName) {
         ImmutableList.Builder<Predicate<Post>> searchCriteriaBuilder = ImmutableList.builder();
 
         if (searchText != null && !searchText.isEmpty()) {
@@ -134,6 +141,10 @@ public class SearchResource {
 
         if (searchPostTypes != null && !searchPostTypes.isEmpty()) {
             searchCriteriaBuilder.add((Post post) -> searchPostTypes.stream().anyMatch(post::isOfType));
+        }
+
+        if (likedFromBlogName != null && !likedFromBlogName.isEmpty()) {
+            searchCriteriaBuilder.add((Post post) -> post.getLikedFromBlogName().toLowerCase().equals(likedFromBlogName.toLowerCase()));
         }
 
         ImmutableList<Predicate<Post>> searchCriteria = searchCriteriaBuilder.build();
