@@ -59,6 +59,10 @@ public class Post {
     @JsonProperty("liked_timestamp")
     public Long getLikedAt() { return likedAt; }
 
+    public String getLikedAtForDisplay() {
+        return likedAt.toString();
+    }
+
     public boolean equals(Post otherPost) {
         if (getId() != null && otherPost.getId() != null) {
             return getId().equals(otherPost.getId());

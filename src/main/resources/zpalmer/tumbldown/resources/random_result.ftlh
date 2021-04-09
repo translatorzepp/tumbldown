@@ -7,13 +7,33 @@
         <title>tumbldown: random like</title>
     </head>
 
-    <body>
+    <script type="text/javascript">
+        function convertEpochTimestampSecondsToDate(timestamp) {
+            timestampMilliseconds = parseInt(timestamp) * 1000;
+
+            if (Number.isNaN(timestampMilliseconds)) {
+                return null;
+            } else {
+                var date = new Date(timestampMilliseconds);
+                return date.toLocaleString();
+            }
+        }
+
+        function convertDates() {
+            var dateElements = document.getElementsByClassName("dateInSeconds")
+            var i;
+            for (i = 0; i < dateElements.length; i++) {
+                var dateElement = dateElements[i];
+                dateElement.innerHTML = convertEpochTimestampSecondsToDate(dateElement.getAttribute("value"));
+            }
+        }
+    </script>
+
+    <body onload="convertDates()">
         <h1>tumbldown</h1>
 
             <div class="post">
-                <#if post.likedFromBlogName?has_content>
-                    liked from <strong>${post.likedFromBlogName}</strong>:
-                </#if>
+                liked from <strong>${post.likedFromBlogName}</strong>:
 
                 <#if post.summary?has_content>
                    <a href="${post.url}" target="_blank">${post.summary}</a>
@@ -29,6 +49,12 @@
                 <div class="tags" style="text-indent:2em">
                     tagged:<#list post.tags as tag><i> #${tag}</i><#else> no tags</#list>
                 </div>
+
+                <#if post.likedAtForDisplay?has_content>
+                <div style="text-indent:2em">
+                    liked at: <span class="dateInSeconds" value="${post.likedAtForDisplay}"></span>
+                <div>
+                </#if>
                 <br/>
             </div>
 
