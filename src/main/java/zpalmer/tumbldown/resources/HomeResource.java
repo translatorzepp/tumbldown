@@ -11,6 +11,6 @@ public class HomeResource {
 
     @GET
     public HomeView displayHomePage() {
-        return new HomeView("/search");
+        return new HomeView("/search", "/random");
     }
 }

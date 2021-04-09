@@ -16,6 +16,10 @@
             <#if likesSearchPath??>
                 <a href="${likesSearchPath}">Search a tumblr's likes</a>
             </#if>
+            <br /> <br />
+            <#if randomLikePath??>
+                <a href="${randomLikePath}">Get a random like</a>
+            </#if>
         </div>
 
         <#include "footer.ftlh">

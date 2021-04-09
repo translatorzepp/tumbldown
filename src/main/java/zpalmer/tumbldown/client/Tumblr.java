@@ -47,6 +47,15 @@ public class Tumblr {
         return makeRequestAndRespondToSuccessOrFailure(invocationBuilder);
     }
 
+    public TumblrResponse getLikesByPage(String blogName) {
+        //api.tumblr.com/v2/blog/{blog-identifier}/likes?api_key={key}
+        WebTarget likesTarget = target("blog/" + blogName + ".tumblr.com/" + "likes");
+
+        Invocation.Builder invocationBuilder = likesTarget.request(MediaType.APPLICATION_JSON);
+
+        return makeRequestAndRespondToSuccessOrFailure(invocationBuilder);
+    }
+
     private TumblrResponse makeRequestAndRespondToSuccessOrFailure(Invocation.Builder invocationBuilder) {
         // TODO: do we need to handle exceptions thrown here?
         try {
