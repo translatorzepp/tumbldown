@@ -17,6 +17,7 @@ import com.codahale.metrics.annotation.Timed;
 
 import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
+import zpalmer.tumbldown.api.tumblr.TumblrResponseHandler;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
 
@@ -38,37 +39,49 @@ public class RandomResource {
     public RandomLikedPostView randomLikedPost(@QueryParam("blogName") @NotEmpty @NotNull String blogName)
         throws WebApplicationException {
 
-        tumblrClient.getBlog(blogName);
+        TumblrSuccessResponse blogResponse = TumblrResponseHandler.returnSuccessOrThrow(
+            tumblrClient.getBlog(blogName),
+            blogName
+        );
 
-        TumblrResponse response = tumblrClient.getLikesByPage(blogName);
-
-        // TODO: extract below to its own service style thingy
-        if (response instanceof TumblrSuccessResponse) {
-            TumblrSuccessResponse success = (TumblrSuccessResponse) response;
-            Collection<Post> likedPosts = success.getPosts();
-
-            Optional<Post> randomPost = likedPosts
-                .stream()
-                .skip(new Random().nextInt(likedPosts.size()))
-                .findFirst();
-            return new RandomLikedPostView(randomPost.get(), blogName);
-            // TODO: handle getPosts being null and getPosts.stream.findFirst() being empty
-        } else {
-            int tumblrErrorStatusCode = response.getMeta().getStatus();
-            String errorDetails;
-            if (tumblrErrorStatusCode == 403) {
-                errorDetails = blogName + "'s likes are not public.";
-            } else if (tumblrErrorStatusCode == 404) {
-                errorDetails = blogName + " does not exist.";
-            } else if (tumblrErrorStatusCode == 429) {
-                // TODO: extract time details from X-Ratelimit headers and suggest a time window in the error message
-                errorDetails = "Tumblr thinks tumbldown is making too many requests. Wait a while and try again.";
-            } else if(tumblrErrorStatusCode >= 500) {
-                errorDetails= "Tumblr is down or unreachable.";
-            } else {
-                errorDetails = "Unknown error: " + tumblrErrorStatusCode + ".";
-            }
-            throw new WebApplicationException(errorDetails, tumblrErrorStatusCode);
+        Long numberOfLikes = blogResponse.getBlog().getNumberOfLikes();
+        if (numberOfLikes <= 0) {
+            throw new WebApplicationException(blogName + " doesn't appear to have liked anything.", 404);
         }
+        int offset = randomOffset(numberOfLikes);
+
+        TumblrSuccessResponse likesResponse = TumblrResponseHandler.returnSuccessOrThrow(
+            tumblrClient.getLikesByOffset(blogName, offset),
+            blogName
+        );
+
+        // TODO: handle getPosts being null and getPosts.stream.findFirst() being empty
+        Collection<Post> likedPosts = likesResponse.getPosts();
+        Optional<Post> randomPost = likedPosts
+            .stream()
+            .skip(new Random().nextInt(likedPosts.size()))
+            .findFirst();
+
+        return new RandomLikedPostView(randomPost.get(), blogName);
+    }
+
+    private int randomOffset(Long numberOfLikes) {
+        final int tumblrOffsetLimit = 1000;
+        int upperBound = upperBoundForOffset(numberOfLikes, tumblrOffsetLimit);
+
+        return new Random().nextInt(upperBound) + 1;
+    }
+
+    protected int upperBoundForOffset(Long numberOfLikes, int limit) {
+        int upperBound;
+
+        // apparently it's legal to compare ints and longs like this
+        if (numberOfLikes < limit) {
+            upperBound = Math.toIntExact(numberOfLikes - 1);
+        } else {
+            upperBound = limit - 1;
+        }
+        // This is -1 to number because if you have X likes, searching for an offset of X might produce NO likes
+        return upperBound;
     }
 }

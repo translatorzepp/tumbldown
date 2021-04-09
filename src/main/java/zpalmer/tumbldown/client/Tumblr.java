@@ -47,9 +47,10 @@ public class Tumblr {
         return makeRequestAndRespondToSuccessOrFailure(invocationBuilder);
     }
 
-    public TumblrResponse getLikesByPage(String blogName) {
+    public TumblrResponse getLikesByOffset(String blogName, int offset) {
         //api.tumblr.com/v2/blog/{blog-identifier}/likes?api_key={key}
-        WebTarget likesTarget = target("blog/" + blogName + ".tumblr.com/" + "likes");
+        WebTarget likesTarget = target("blog/" + blogName + ".tumblr.com/" + "likes")
+            .queryParam("offset", offset);
 
         Invocation.Builder invocationBuilder = likesTarget.request(MediaType.APPLICATION_JSON);
 
