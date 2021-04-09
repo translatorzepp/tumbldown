@@ -2,7 +2,6 @@ package zpalmer.tumbldown.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.ImmutableList;
-import org.hibernate.validator.constraints.NotEmpty;
 import zpalmer.tumbldown.api.Blog;
 import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
@@ -10,6 +9,7 @@ import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
 import zpalmer.tumbldown.core.SearchCriteria;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

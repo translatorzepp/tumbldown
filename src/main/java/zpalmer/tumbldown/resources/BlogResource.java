@@ -2,10 +2,9 @@ package zpalmer.tumbldown.resources;
 
 import com.codahale.metrics.annotation.Timed;
 
+import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 import zpalmer.tumbldown.api.Blog;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;

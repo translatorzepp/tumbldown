@@ -16,6 +16,5 @@ public class BlogResourceTest {
         assertThat(Blog.sanitizeBlogName(spaceBlogName)).isEqualTo("tumbldown-app");
         assertThat(Blog.sanitizeBlogName(shortBlogName)).isEqualTo("tumbldown-app");
         assertThat(Blog.sanitizeBlogName(capitalizedBlogName)).isEqualTo("tumbldown-app");
-
     }
 }
