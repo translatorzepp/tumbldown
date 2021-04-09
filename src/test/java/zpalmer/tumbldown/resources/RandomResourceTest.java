@@ -1,7 +1,10 @@
 package zpalmer.tumbldown.resources;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -25,14 +28,15 @@ public class RandomResourceTest {
     
     @Test
     public void retrievesBlogInfoForSpecifiedBlog() {
-        // when(fakeResponse.getBlog()).thenReturn(blog);
+        when(fakeResponse.getBlog()).thenReturn(blog);
+        when(fakeTumblr.getBlog("tumbldown")).thenReturn(fakeResponse);
         // when(fakeResponse.getPosts()).thenReturn(Collections.singletonList(post));
-        // when(fakeTumblr.getBlog("tumbldown")).thenReturn(fakeResponse);
 
-        // new RandomResource(fakeTumblr)
-        //     .randomLikedPost("tumbldown");
+        Long blogNumberOfLikes = randomResource.fetchBlogNumberOfLikes("tumbldown");
 
-        // Mockito.verify(fakeTumblr, Mockito.times(1)).getBlog("tumbldown");
+        assertEquals(blog.getNumberOfLikes(), blogNumberOfLikes);
+        Mockito.verify(fakeTumblr, Mockito.times(1)).getBlog("tumbldown");
+        Mockito.verify(fakeTumblr, never()).getLikesByOffset(anyString(), anyInt());
     }
 
     @Test

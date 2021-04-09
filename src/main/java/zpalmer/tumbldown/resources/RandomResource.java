@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import com.codahale.metrics.annotation.Timed;
 
 import zpalmer.tumbldown.api.Post;
-import zpalmer.tumbldown.api.tumblr.TumblrResponse;
 import zpalmer.tumbldown.api.tumblr.TumblrResponseHandler;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
@@ -39,30 +38,36 @@ public class RandomResource {
     public RandomLikedPostView randomLikedPost(@QueryParam("blogName") @NotEmpty @NotNull String blogName)
         throws WebApplicationException {
 
-        TumblrSuccessResponse blogResponse = TumblrResponseHandler.returnSuccessOrThrow(
-            tumblrClient.getBlog(blogName),
-            blogName
-        );
-
-        Long numberOfLikes = blogResponse.getBlog().getNumberOfLikes();
+        Long numberOfLikes = fetchBlogNumberOfLikes(blogName);
         if (numberOfLikes <= 0) {
             throw new WebApplicationException(blogName + " doesn't appear to have liked anything.", 404);
         }
-        int offset = randomOffset(numberOfLikes);
 
-        TumblrSuccessResponse likesResponse = TumblrResponseHandler.returnSuccessOrThrow(
-            tumblrClient.getLikesByOffset(blogName, offset),
-            blogName
-        );
+        Post randomPost = fetchRandomPost(blogName, numberOfLikes);
+        return new RandomLikedPostView(randomPost, blogName);
+    }
+
+    protected Long fetchBlogNumberOfLikes(String blogName) {
+        return TumblrResponseHandler
+            .returnSuccessOrThrow(tumblrClient.getBlog(blogName), blogName)
+            .getBlog()
+            .getNumberOfLikes();
+    }
+
+    protected Post fetchRandomPost(String blogName, Long totalNumberOfLikes) {
+        int offset = randomOffset(totalNumberOfLikes);
+
+        TumblrSuccessResponse likesResponse = TumblrResponseHandler
+                .returnSuccessOrThrow(tumblrClient.getLikesByOffset(blogName, offset), blogName);
 
         // TODO: handle getPosts being null and getPosts.stream.findFirst() being empty
         Collection<Post> likedPosts = likesResponse.getPosts();
-        Optional<Post> randomPost = likedPosts
-            .stream()
+        Optional<Post> randomPost = likedPosts.
+            stream()
             .skip(new Random().nextInt(likedPosts.size()))
             .findFirst();
 
-        return new RandomLikedPostView(randomPost.get(), blogName);
+        return randomPost.get();
     }
 
     private int randomOffset(Long numberOfLikes) {
