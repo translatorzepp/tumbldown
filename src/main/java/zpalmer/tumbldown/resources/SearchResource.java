@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class SearchResource {
     private Tumblr tumblrClient;
     private Long MAX_TIME_DELTA_SECONDS = 30 * 24 * 60 * 60L; // Should be tuned to get max posts without the request from the client timing out
-    private int POSTS_PER_PAGE = 10;
+    private int POSTS_PER_DISPLAY_PAGE = 10;
 
     public SearchResource(Tumblr client) { this.tumblrClient = client; }
 
@@ -49,7 +49,7 @@ public class SearchResource {
         Long maxLikedBefore = likedBeforeTimestampSeconds - MAX_TIME_DELTA_SECONDS;
 
         LinkedList<Post> resultsPage = new LinkedList<>(Collections.emptyList());
-        int additionalPostsNeeded = POSTS_PER_PAGE;
+        int additionalPostsNeeded = POSTS_PER_DISPLAY_PAGE;
 
         // TODO: Refactor and individual test components
         while ((additionalPostsNeeded > 0) && (likedBeforeTimestampSeconds != null) && likedBeforeTimestampSeconds > maxLikedBefore) {
@@ -70,7 +70,7 @@ public class SearchResource {
                     likedBeforeTimestampSeconds = likedPosts.getLast().getLikedAt();
                 }
             }
-            additionalPostsNeeded = POSTS_PER_PAGE - resultsPage.size();
+            additionalPostsNeeded = POSTS_PER_DISPLAY_PAGE - resultsPage.size();
         }
 
         return new LikesResultPageView(
