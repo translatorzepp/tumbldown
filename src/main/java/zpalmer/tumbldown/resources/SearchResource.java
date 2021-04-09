@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import zpalmer.tumbldown.api.Blog;
 import zpalmer.tumbldown.api.Post;
 import zpalmer.tumbldown.api.tumblr.TumblrResponse;
+import zpalmer.tumbldown.api.tumblr.TumblrResponseHandler;
 import zpalmer.tumbldown.api.tumblr.TumblrSuccessResponse;
 import zpalmer.tumbldown.client.Tumblr;
 import zpalmer.tumbldown.core.SearchCriteria;
@@ -98,30 +99,11 @@ public class SearchResource {
             throws WebApplicationException {
         TumblrResponse response = tumblrClient.getLikes(blogName, likedBeforeTimestampSeconds);
 
-        if (response instanceof TumblrSuccessResponse) {
-            TumblrSuccessResponse success = (TumblrSuccessResponse) response;
-
-            if (!(success.getPosts() == null)) {
-                return new LinkedList<>(success.getPosts());
-            } else {
-                return new LinkedList<>();
-            }
+        TumblrSuccessResponse success = TumblrResponseHandler.returnSuccessOrThrow(response, blogName);
+        if (!(success.getPosts() == null)) {
+            return new LinkedList<>(success.getPosts());
         } else {
-            int tumblrErrorStatusCode = response.getMeta().getStatus();
-            String errorDetails;
-            if (tumblrErrorStatusCode == 403) {
-                errorDetails = blogName + "'s likes are not public.";
-            } else if (tumblrErrorStatusCode == 404) {
-                errorDetails = blogName + " does not exist.";
-            } else if (tumblrErrorStatusCode == 429) {
-                // TODO: extract time details from X-Ratelimit headers and suggest a time window in the error message
-                errorDetails = "Tumblr thinks tumbldown is making too many requests. Wait a while and try again.";
-            } else if(tumblrErrorStatusCode >= 500) {
-                errorDetails= "Tumblr is down or unreachable.";
-            } else {
-                errorDetails = "Unknown error: " + tumblrErrorStatusCode + ".";
-            }
-            throw new WebApplicationException(errorDetails, tumblrErrorStatusCode);
+            return new LinkedList<>();
         }
     }
 

@@ -130,6 +130,6 @@ public class SearchResourceTest {
 
         assertThatExceptionOfType(WebApplicationException.class).isThrownBy(() -> {
             failSearchResource.getLikesBefore("secret-blog",1L);
-        }).withMessageContaining("Unknown error: 422.");
+        }).withMessageContaining("Unknown error: 422 - ???");
     }
 }
