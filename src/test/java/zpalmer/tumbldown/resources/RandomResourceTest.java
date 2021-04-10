@@ -3,6 +3,7 @@ package zpalmer.tumbldown.resources;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
@@ -30,7 +31,6 @@ public class RandomResourceTest {
     public void retrievesBlogInfoForSpecifiedBlog() {
         when(fakeResponse.getBlog()).thenReturn(blog);
         when(fakeTumblr.getBlog("tumbldown")).thenReturn(fakeResponse);
-        // when(fakeResponse.getPosts()).thenReturn(Collections.singletonList(post));
 
         Long blogNumberOfLikes = randomResource.fetchBlogNumberOfLikes("tumbldown");
 
@@ -49,5 +49,16 @@ public class RandomResourceTest {
 
         int atLimit = randomResource.upperBoundForOffset(1000L, 1000);
         assertEquals(999, atLimit);
+    }
+
+    @Test
+    public void requestsLikesFromTumblr() {
+        when(fakeResponse.getPosts()).thenReturn(Collections.singletonList(post));
+        when(fakeTumblr.getLikesByOffset(eq("tumbldown"), anyInt())).thenReturn(fakeResponse);
+
+        Post fetchedPost = randomResource.fetchRandomPost("tumbldown", 222L);
+        assertEquals(post, fetchedPost);
+        // TODO: can I assert that the number this is called with is 0 < x < 222 ?
+        Mockito.verify(fakeTumblr, Mockito.times(1)).getLikesByOffset(eq("tumbldown"), anyInt());
     }
 }
