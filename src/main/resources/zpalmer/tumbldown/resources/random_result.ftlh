@@ -53,7 +53,7 @@
                 <#if post.likedAtForDisplay?has_content>
                 <div style="text-indent:2em">
                     liked at: <span class="dateInSeconds" value="${post.likedAtForDisplay}"></span>
-                <div>
+                </div>
                 </#if>
                 <br/>
             </div>
