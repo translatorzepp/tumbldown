@@ -9,6 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -32,7 +33,7 @@ public class RandomResourceTest {
         when(fakeResponse.getBlog()).thenReturn(blog);
         when(fakeTumblr.getBlog("tumbldown")).thenReturn(fakeResponse);
 
-        Long blogNumberOfLikes = randomResource.fetchBlogNumberOfLikes("tumbldown");
+        Optional<Long> blogNumberOfLikes = randomResource.fetchBlogNumberOfLikes("tumbldown");
 
         assertEquals(blog.getNumberOfLikes(), blogNumberOfLikes);
         Mockito.verify(fakeTumblr, Mockito.times(1)).getBlog("tumbldown");

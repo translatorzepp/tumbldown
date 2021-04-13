@@ -1,5 +1,7 @@
 package zpalmer.tumbldown.api;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,7 +22,9 @@ public class Blog {
     public String getName() { return name; }
 
     @JsonProperty("likes")
-    public Long getNumberOfLikes() { return numberOfLikes; }
+    public Optional<Long> getNumberOfLikes() {
+        return Optional.ofNullable(numberOfLikes);
+    }
 
     public static String sanitizeBlogName(String name) {
         return name.toLowerCase().replace(".tumblr.com", "").trim();

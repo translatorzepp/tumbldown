@@ -38,16 +38,19 @@ public class RandomResource {
     public RandomLikedPostView randomLikedPost(@QueryParam("blogName") @NotEmpty @NotNull String blogName)
         throws WebApplicationException {
 
-        Long numberOfLikes = fetchBlogNumberOfLikes(blogName);
-        if (numberOfLikes <= 0) {
-            throw new WebApplicationException(blogName + " doesn't appear to have liked anything.", 404);
-        }
+        return fetchBlogNumberOfLikes(blogName)
+            .map(numberOfLikes -> {
+                if (numberOfLikes <= 0) {
+                    throw new WebApplicationException(blogName + " doesn't appear to have liked anything.", 404);
+                }
 
-        Post randomPost = fetchRandomPost(blogName, numberOfLikes);
-        return new RandomLikedPostView(randomPost, blogName);
+                Post randomPost = fetchRandomPost(blogName, numberOfLikes);
+                return new RandomLikedPostView(randomPost, blogName);
+            })
+            .orElseThrow(() -> new WebApplicationException(blogName + "'s likes are not public.", 403));
     }
 
-    protected Long fetchBlogNumberOfLikes(String blogName) {
+    protected Optional<Long> fetchBlogNumberOfLikes(String blogName) {
         return TumblrResponseHandler
             .returnSuccessOrThrow(tumblrClient.getBlog(blogName), blogName)
             .getBlog()
