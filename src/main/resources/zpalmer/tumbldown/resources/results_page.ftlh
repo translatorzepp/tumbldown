@@ -8,7 +8,7 @@
         <script type="text/javascript" src="/assets/javascript/results.js"></script>
     </head>
 
-    <body onload="displayDatesFromCriteria()">
+    <body onload="displayDatesFromCriteria()" onunload="hideSearchSpinner()">
         <h1>tumbldown</h1>
 
         <div id="search_criteria">
@@ -79,9 +79,9 @@
         </#if>
 
         <br/>
-        <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
-        <br/><br/><br/>
-        <a href="/search">New search?</a>
+        <div class="spinner" id="searchingSpinner" hidden></div>
+        <br/><br/><br/><br/>
+        <div><a href="/search">New search?</a></div>
 
         <#include "footer.ftlh">
     </body>

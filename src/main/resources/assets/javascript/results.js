@@ -33,5 +33,9 @@ function convertEpochTimestampSecondsToDate(timestamp) {
 }
 
 function showSearchSpinner() {
-    document.getElementById("searchingSpinner").removeAttribute("hidden");
+    document.getElementById("searchingSpinner").hidden = false;
+}
+
+function hideSearchSpinner() {
+    document.getElementById("searchingSpinner").hidden = true;
 }
