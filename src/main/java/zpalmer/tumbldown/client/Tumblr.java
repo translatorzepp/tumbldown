@@ -67,6 +67,9 @@ public class Tumblr {
             } else {
                 Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).log(Level.WARNING, response.getHeaders().toString());
 
+                //response.getHeaderString("X-Ratelimit-Perhour-Reset") // X-Ratelimit-Perhour-Reset: 460
+                // divide by 60 to get minutes til reset??
+
                 TumblrFailureResponse failResponse = response.readEntity(TumblrFailureResponse.class);
                 Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).log(Level.WARNING, failResponse.getMeta().getMessage());
                 Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME).log(Level.WARNING, String.valueOf(failResponse.getMeta().getStatus()));
