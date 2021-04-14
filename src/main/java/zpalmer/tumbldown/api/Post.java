@@ -52,6 +52,7 @@ public class Post {
     public String getSummary() { return summary; }
     public ArrayList<String> getTags() { return tags; }
     public String getType() { return type; }
+    public String getSlug() { return slug; }
 
     @JsonProperty("post_url")
     public URL getUrl() { return url; }
