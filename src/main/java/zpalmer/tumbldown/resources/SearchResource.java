@@ -43,6 +43,9 @@ public class SearchResource {
                                                   @QueryParam("beforeTimestamp") String beforeTimestamp,
                                                   @QueryParam("postTypes") final List<String> postTypes
     ) throws WebApplicationException {
+        final Long TIMEOUT_IN_MS = 27500L; // heroku returns a 503 timeout after 30 seconds
+        Long startTime = System.currentTimeMillis();
+
         final String blogToSearch = Blog.sanitizeBlogName(blogName);
 
         Long initialLikedBeforeTimestampSeconds = getTimestampFromParams(beforeTimestamp);
@@ -53,7 +56,12 @@ public class SearchResource {
         int additionalPostsNeeded = POSTS_PER_DISPLAY_PAGE;
 
         // TODO: Refactor and individual test components
-        while ((additionalPostsNeeded > 0) && (likedBeforeTimestampSeconds != null) && likedBeforeTimestampSeconds > maxLikedBefore) {
+        while (
+            (additionalPostsNeeded > 0) &&
+            (likedBeforeTimestampSeconds != null) &&
+            (likedBeforeTimestampSeconds > maxLikedBefore) &&
+            ((System.currentTimeMillis() - startTime) < TIMEOUT_IN_MS)
+        ) {
 
             LinkedList<Post> likedPosts = getLikesBefore(blogToSearch, likedBeforeTimestampSeconds);
 
