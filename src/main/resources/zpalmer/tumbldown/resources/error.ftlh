@@ -11,7 +11,7 @@
         <h1>tumbldown</h1>
 
         <div>
-            <small>:( something went wrong.</small>
+            <small>ಠ_ಠ something went wrong.</small>
 
             <#if error??>
                 <p>${error.message}</p>
@@ -21,7 +21,9 @@
                 <#list validationErrors as validationError><p>${validationError}</p></#list>
             </#if>
 
-            <a href="/search">Back to search</a>
+            <a href="/search">Back to search</a><br/><br/>
+            <a href="/random">Back to random</a><br/><br/>
+            <a href="/">Back to home</a><br/>
         </div>
 
         <#include "footer.ftlh">
