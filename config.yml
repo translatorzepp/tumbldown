@@ -27,3 +27,10 @@ viewRendererConfiguration:
         strict_syntax: yes
         whitespace_stripping: yes
         default_encoding: UTF-8
+
+metrics:
+    reporter:
+    - type: console
+      timeZone: UTC
+      output: stdout
+    reportOnStop: true
