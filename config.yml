@@ -9,6 +9,12 @@ jerseyClient:
   connectionRequestTimeout: 1500ms
   gzipEnabled: true
 
+viewRendererConfiguration:
+  freemarker:
+    strict_syntax: yes
+    whitespace_stripping: yes
+    default_encoding: UTF-8
+
 logging:
   level: INFO
   loggers:
@@ -16,21 +22,18 @@ logging:
     org.glassfish.jersey.logging.LoggingFeature: DEBUG
   appenders:
     - type: console
+      timeZone: UTC
     - type: file
+      timeZone: UTC
       currentLogFilename: ./logs/dev.log
       archive: false
       layout:
         type: json
 
-viewRendererConfiguration:
-    freemarker:
-        strict_syntax: yes
-        whitespace_stripping: yes
-        default_encoding: UTF-8
-
 metrics:
-    reporter:
+  reporters:
     - type: console
       timeZone: UTC
       output: stdout
-    reportOnStop: true
+      includes: [zpalmer.tumbldown.resources.SearchResource.displayResultsPage]
+  reportOnStop: true
