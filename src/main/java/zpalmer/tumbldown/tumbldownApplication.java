@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.glassfish.jersey.logging.LoggingFeature;
 
 import zpalmer.tumbldown.client.Tumblr;
+import zpalmer.tumbldown.core.ResponseHeadersFilter;
 import zpalmer.tumbldown.resources.*;
 
 public class tumbldownApplication extends Application<tumbldownConfiguration> {
@@ -65,6 +66,8 @@ public class tumbldownApplication extends Application<tumbldownConfiguration> {
         environment.jersey().register(new SearchResource(tumblr));
         environment.jersey().register(new RandomResource(tumblr));
         environment.jersey().register(new HomeResource());
+
+        environment.jersey().register(ResponseHeadersFilter.class);
 
         environment.jersey().register(new ErrorEntityWriter<ErrorMessage, View>(MediaType.TEXT_HTML_TYPE, View.class) {
             @Override
