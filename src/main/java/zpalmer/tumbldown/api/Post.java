@@ -22,6 +22,8 @@ public class Post {
 
     public Post() { }
 
+    // TODO: switch to builder pattern
+
     public Post(Long id, String summary, ArrayList<String> tags) {
         this.id = id;
         this.summary = summary;

@@ -67,7 +67,26 @@ public class SearchResourceTest {
     }
 
     @Test
-    public void selectOnlyPostsThatMeetAllCriteria() {
+    public void selectOnlyPostsLikedFromMatchingUser() {
+        var postLikedFromUser = new Post();
+        var postLikedFromOtherUser = new Post();
+        var postLikedFromUnknownUser = new Post();
+        LinkedList<Post> posts = new LinkedList<>();
+        posts.add(postLikedFromUnknownUser);
+        posts.add(postLikedFromUser);
+        posts.add(postLikedFromOtherUser);
+
+        Collection<Post> searchResults = new SearchResource(fakeTumblr)
+                .filterPostsBySearchCriteria(posts,
+                        "",
+                        new ImmutableList.Builder<String>()
+                                .build());
+
+        assertThat(searchResults).containsExactly(postLikedFromUser);
+    }
+
+    @Test
+    public void selectOnlyPostsThatMeetMultipleCriteria() {
         LinkedList<Post> posts = new LinkedList<>();
         posts.add(postWithSearchStringInSummary); // match gay and quote
         posts.add(postWithoutSearchString); // match neither
@@ -76,6 +95,7 @@ public class SearchResourceTest {
         posts.add(postOfTypeImage); // match neither
         posts.add(postOfTypeQuote); // match gay and quote
         posts.add(postWithSearchStringInTag); // match gay but not quote
+        posts.add(new Post(8L, "straight summary", "quote")); // match quote but not gay
 
         Collection<Post> searchResults = new SearchResource(fakeTumblr)
                 .filterPostsBySearchCriteria(posts,

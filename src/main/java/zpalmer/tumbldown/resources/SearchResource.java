@@ -115,6 +115,7 @@ public class SearchResource {
         }
     }
 
+    // TODO: refactor so this takes an object, not a set of parameters
     LinkedList<Post> filterPostsBySearchCriteria(LinkedList<Post> posts, String searchText, List<String> searchPostTypes) {
         ImmutableList.Builder<Predicate<Post>> searchCriteriaBuilder = ImmutableList.builder();
 
