@@ -20,11 +20,12 @@ function search() {
 
 function convertDateStringToEpochTimestampSeconds(dateString) {
     if (dateString != null && dateString != "") {
-            var date = new Date(beforeDate);
-            date.setHours(00);
-            date.setMinutes(00);
-            date.setSeconds(00);
-            return Math.round(date.getTime() / 1000);
+        var date = new Date(dateString);
+        date.setHours(00);
+        date.setMinutes(00);
+        date.setSeconds(00);
+
+        return Math.round(date.getTime() / 1000);
     } else {
         return Math.round((new Date()).getTime() / 1000);
     }
