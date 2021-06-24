@@ -1,13 +1,22 @@
 body {
   font-family: sans-serif;
+  --tumblr-blue: #36465d;
+  --default-link-color: #0000EE;
 }
 
 h1 {
-    color: #36465d; /* tumblr blue */
+    color: var(--tumblr-blue);
 }
 
-.posts, {
+.posts {
   letter-spacing: 0.05em;
+}
+
+a:link {
+  color: var(--default-link-color); /* set default for links to match with navigation links */
+}
+.navigation {
+  color: var(--default-link-color); /* override `visited` styling for "back" links, since those will always be considered "visited" */
 }
 
 /* --- Search spinner --- */
@@ -16,7 +25,7 @@ h1 {
   width: 30px;
   height: 30px;
   margin: 10px auto;
-  background-color: #36465d; /* use #f0f8ff if tumblr blue is background */
+  background-color: var(--tumblr-blue); /* use #f0f8ff if tumblr blue is background */
 
   float: left;
 

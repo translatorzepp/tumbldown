@@ -14,11 +14,11 @@
             <p>An app for searching tumblr.</p>
 
             <#if likesSearchPath??>
-                <a href="${likesSearchPath}">Search a tumblr's likes</a>
+                <a class="navigation" href="${likesSearchPath}">Search a tumblr's likes</a>
             </#if>
             <br /> <br />
             <#if randomLikePath??>
-                <a href="${randomLikePath}">Get a random like</a>
+                <a class="navigation" href="${randomLikePath}">Get a random like</a>
             </#if>
         </div>
 

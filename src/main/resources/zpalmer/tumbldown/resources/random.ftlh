@@ -21,6 +21,9 @@
             </form>
         </div>
 
+        <br/>
+        <div><a class="navigation" href="/">Back to home</a></div><br/>
+
         <#include "footer.ftlh">
     </body>
 </html>

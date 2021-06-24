@@ -21,9 +21,9 @@
                 <#list validationErrors as validationError><p>${validationError}</p></#list>
             </#if>
 
-            <a href="/search">Back to search</a><br/><br/>
-            <a href="/random">Back to random</a><br/><br/>
-            <a href="/">Back to home</a><br/>
+            <div><a class="navigation" href="/search">Back to search</a></div><br/>
+            <div><a class="navigation" href="/random">Back to random</a></div><br/>
+            <div><a class="navigation" href="/">Back to home</a></div><br/>
         </div>
 
         <#include "footer.ftlh">

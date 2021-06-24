@@ -81,7 +81,8 @@
         <br/>
         <div class="spinner" id="searchingSpinner" hidden></div>
         <br/><br/><br/><br/>
-        <div><a href="/search">New search?</a></div>
+        <div><a class="navigation" href="/search">New search?</a></div><br/>
+        <div><a class="navigation" href="/">Back to home</a></div><br/>
 
         <#include "footer.ftlh">
     </body>
