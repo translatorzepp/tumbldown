@@ -36,11 +36,11 @@
                 liked from <strong>${post.likedFromBlogName}</strong>:
 
                 <#if post.summary?has_content>
-                   <a href="${post.url}" target="_blank">${post.summary}</a>
+                   <a href="${post.url}" target="_blank" rel="noopener noreferrer">${post.summary}</a>
                 <#elseif post.slug?has_content>
-                    <a href="${post.url}" target="_blank">${post.slug}</a>
+                    <a href="${post.url}" target="_blank" rel="noopener noreferrer">${post.slug}</a>
                 <#else>
-                    <a href="${post.url}" target="_blank">link</a>
+                    <a href="${post.url}" target="_blank" rel="noopener noreferrer">link</a>
                 </#if>
 
                 <small><i>${post.type}</i></small>
