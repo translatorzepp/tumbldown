@@ -18,7 +18,7 @@ public class ResponseHeadersFilter implements ContainerResponseFilter {
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
         throws IOException {
             var headers = responseContext.getHeaders();
-            headers.add("Strict-Transport-Security", "max-age: 63072000");
+            headers.add("Strict-Transport-Security", "max-age=63072000");
 
             headers.add("X-Clacks-Overhead", GNU_NAMES);
     }
