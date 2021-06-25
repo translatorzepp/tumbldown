@@ -78,9 +78,8 @@
         <br/><br/>
         </#if>
 
-        <br/>
-        <div class="spinner" id="searchingSpinner" hidden></div>
-        <br/><br/><br/><br/>
+        <#include "spinner.ftlh">
+
         <div><a class="navigation" href="/search">New search?</a></div><br/>
         <div><a class="navigation" href="/">Back to home</a></div><br/>
 

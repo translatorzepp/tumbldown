@@ -47,11 +47,10 @@
             </form>
         </div>
 
-        <div class="spinner" id="searchingSpinner" hidden="hidden"></div>
+        <#include "spinner.ftlh">
 
         <div class="error" id="errorMessage"></div>
 
-        <br/>
         <div><a class="navigation" href="/">Back to home</a></div><br/>
 
         <#include "footer.ftlh">

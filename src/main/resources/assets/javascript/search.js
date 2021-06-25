@@ -1,6 +1,6 @@
 function search() {
-    showSearchSpinner();
     if (validateSearchInput(document.getElementById('blogName').value, document.getElementById('searchText').value)) {
+        showSearchSpinner();
         document.getElementById('errorMessage').innerHTML = null;
 
         var beforeTimestampSeconds = Math.round((new Date()).getTime() / 1000);
