@@ -16,7 +16,7 @@ public class TumblrResponseHandler {
             } else if (tumblrErrorStatusCode == 404) {
                 errorDetails = blogName + " does not exist.";
             } else if (tumblrErrorStatusCode == 429) {
-                errorDetails = "Tumblr thinks tumbldown is making too many requests. Wait a minute or two and try again.";
+                errorDetails = "Tumblr thinks tumbldown is making too many requests. Wait a minute or two and refresh the page to try again.";
             } else if (tumblrErrorStatusCode >= 500) {
                 errorDetails= "Tumblr is down or unreachable.";
             } else {
