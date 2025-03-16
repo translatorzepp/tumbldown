@@ -68,7 +68,7 @@
         </div>
 
         <br/><br/><br/>
-        <div><a class="navigation" href="/random">Randomize again?</a></div><br/>
+        <div><a class="navigation" href="/random">Randomize from another blog</a></div><br/>
         <div><a class="navigation" href="/">Back to home</a></div><br/>
 
         <#include "footer.ftlh">
